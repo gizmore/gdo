@@ -52,7 +52,7 @@ build-iPhoneSimulator/
 # MERGE
 .rspec
 .rspec_status
-
+/.redcar/
 
 
 ######
