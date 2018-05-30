@@ -43,11 +43,11 @@ module GDO::DB
 
     def where(where, op='AND')
       if @where
-        where += "#{op} "
+        @where += "#{op} "
       else
         @where = "WHERE "
       end
-      where += "(#{where}) "
+      @where += "(#{where}) "
       self
     end
 
@@ -75,6 +75,7 @@ module GDO::DB
       query += @select if @select
       query += build_from
       query += build_values
+      query += @where if @where
       query += @limit if @limit
       query
     end
@@ -82,7 +83,6 @@ module GDO::DB
     def execute
       db = ::GDO::DB::Connection.instance
       query = build
-      byebug
       if @write
         db.query_write(query)
       else

@@ -5,6 +5,8 @@ module GDO
   # Dataset test entity.
   # It's tablename is GDO_SPECSimpleKV
   class SPECSimpleKV < Core::GDO
+    def gdo_cached; true; end # activate gdo cache
+    def mem_cached; false; end # activate memcached
     def fields
       [
           GDO::DB::GDT_Name.make(:skv_key).primary.not_null,
@@ -56,7 +58,7 @@ module GDO
     it "has a working gdo selection cache" do
       row = ::GDO::SPECSimpleKV.blank("skv_key" => 'version', "skv_value" => '1.0.1').insert
       expect(::GDO::SPECSimpleKV.table.find('version')).to equal(row)
-      expect(::GDO::SPECSimpleKV.table.find('version')).get_var(:svk_value).to eq('1.0.1')
+      expect(::GDO::SPECSimpleKV.table.find('version').get_var(:skv_value)).to eq('1.0.1')
     end
 
 

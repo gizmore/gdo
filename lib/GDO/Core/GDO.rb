@@ -37,10 +37,12 @@ module GDO::Core
     def column(name); columns[name].gdo(self); end
     def db; ::GDO::DB::Connection.instance; end
     def self.db; ::GDO::DB::Connection.instance; end
+    def table; self.class.table; end
     def self.table; db.table_for(self); end
     def name; self.class.name; end
     def table_name; name.gsub('::', '_'); end
 
+    def _cache; @cache; end
     def init_cache
       @cache = ::GDO::DB::Cache.new(self)
       self
@@ -49,9 +51,10 @@ module GDO::Core
     def get_id
       id = ""
       primary_key_columns.each {|name,gdt|
-        id += ":#{gdt.get_var}"
+        id += ":" unless id.empty?
+        id += get_var(name)
       }
-      id[1...-1]
+      id
     end
     
     ##############
@@ -105,7 +108,15 @@ module GDO::Core
 
     def insert
       query.insert.values(dirty_vars).execute
+      dirty(false).persisted
+      recache
       after_create
+      self
+    end
+    
+    def recache
+      table = self.table
+      table._cache.recache(self) if table._cache
       self
     end
 
@@ -123,19 +134,21 @@ module GDO::Core
     #################
     ### Selection ###
     #################
-    def find(*id)
+    def find(id)
       get_by_id(id)
     end
 
-    def get_by_id(*id)
+    def get_by_id(id)
       if (!@cache) || (!(gdo = @cache.find_cached(id)))
         i = 0
         query = select
+        ids = id.split(':')
         primary_key_columns.each {|name,gdt|
-          query.where("#{gdt.identifier}=#{id[i]}")
+          query.where("#{gdt.identifier}=#{::GDO::Core::GDO.quote(ids[i])}")
           i += 1
         }
         gdo = query.first.execute.fetch_object
+        gdo.recache
       end
       gdo
     end

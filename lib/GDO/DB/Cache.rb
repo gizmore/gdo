@@ -4,6 +4,7 @@ module GDO::DB
     def self.get(key); end
     def self.set(key, value); end
     def self.remove(key); end
+    def self.delete(key); end
     def self.flush; end
 
     def self.init()
@@ -18,6 +19,10 @@ module GDO::DB
 
     def dummy
       @dummy ||= @gdo.class.blank
+    end
+    
+    def klass
+      @gdo.table_name
     end
 
     def find_cached(id)

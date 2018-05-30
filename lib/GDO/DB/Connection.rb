@@ -94,6 +94,7 @@ module GDO::DB
       if !@@tables[klass]
         @@tables[klass] = gdo = Object.const_get(klass.name).new
         @@columns[klass] = init_fields(gdo)
+        gdo.init_cache if gdo.gdo_cached
       end
       @@tables[klass]
     end
