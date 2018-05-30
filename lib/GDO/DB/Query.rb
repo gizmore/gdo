@@ -4,7 +4,7 @@ module GDO::DB
     REPLACE = 'REPLACE INTO '
     INSERT = 'INSERT INTO '
     UPDATE = 'UPDATE '
-    SELECT = 'SELECT  '
+    SELECT = 'SELECT '
     DELETE = 'DELETE '
 
     def initialize
@@ -15,13 +15,18 @@ module GDO::DB
       @limit = nil
       @where = nil
       @values = nil
+      @cached = true
     end
+    
+    def cached(cached=true); @cached = cached; self; end
+    def uncached; cached(false); end
 
     def select(fields)
       @type = SELECT
       @select += ',' unless @select.nil?
       @select ||= ''
       @select += fields
+      @select += " "
       self
     end
     def insert; @type = INSERT; @write = true; self; end
@@ -33,19 +38,20 @@ module GDO::DB
 
     def gdo(gdo); @gdo = gdo; from(gdo.table_name); end
 
-    def from(from); @from ||= ' FROM '; @from += " #{from}"; self; end
+    def from(from); @from = "#{from} "; self; end
+    def build_from; @write ? @from : "FROM #{@from} "; end
 
     def where(where, op='AND')
       if @where
-        where += " #{op} "
+        where += "#{op} "
       else
-        @where = " WHERE "
+        @where = "WHERE "
       end
-      where += "(#{where})"
+      where += "(#{where}) "
       self
     end
 
-    def limit(count, start=0); @limit = " LIMIT #{start}, #{count}"; self; end
+    def limit(count, start=0); @limit = "LIMIT #{start}, #{count} "; self; end
     def first; limit(1); end
 
     def values(values); @values ||= {}; @values.merge!(values); self; end
@@ -57,7 +63,7 @@ module GDO::DB
         fields.push(::GDO::Core::GDO.quoteIdentifier(k))
         values.push(::GDO::Core::GDO.quote(v))
       }
-      " (#{fields.join(',')}) VALUES (#{values.join(',')})"
+      "(#{fields.join(',')}) VALUES (#{values.join(',')}) "
     end
 
     ############
@@ -66,19 +72,22 @@ module GDO::DB
     def build
       query = ""
       query += @type
-      query += @from
+      query += @select if @select
+      query += build_from
       query += build_values
       query += @limit if @limit
+      query
     end
 
     def execute
       db = ::GDO::DB::Connection.instance
       query = build
+      byebug
       if @write
         db.query_write(query)
       else
         result = db.query_read(query)
-
+        ::GDO::DB::Result.new(result).table(@gdo).cached(@cached)
       end
     end
 

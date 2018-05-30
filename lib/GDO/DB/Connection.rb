@@ -31,19 +31,24 @@ module GDO::DB
     ###############
     def get_link
       if !@link
-        t1 = Time.new
-        @link = ::Mysql2::Client.new(
-            host: @hostname,
-            username: @username,
-            password: @password,
-            database: @database,
-            reconnect: true,
-        )
-        t2 = Time.new - t1
-        @queries_time += t2
-        @@queries_time += t2
+        begin
+          t1 = Time.new
+          @link = ::Mysql2::Client.new(
+              host: @hostname,
+              username: @username,
+              password: @password,
+              database: @database,
+              reconnect: true,
+          )
+          t2 = Time.new - t1
+          @queries_time += t2
+          @@queries_time += t2
+        rescue StandardError => e
+          ::GDO::Core::Log.exception(e)
+          raise ::GDO::DB::Exception.new(e.to_s).query("GDO connection failure.")
+        end
         query("SET NAMES UTF8")
-      end
+     end
       @link
     end
 
@@ -64,7 +69,6 @@ module GDO::DB
 
     def query(query)
       begin
-        ::GDO::Core::Log.raw('queries', query)
         @queries += 1
         @@queries += 1
         t1 = Time.new
@@ -72,9 +76,13 @@ module GDO::DB
         t2 = Time.new - t1
         @queries_time += t2
         @@queries_time += t2
+
+        ::GDO::Core::Log.raw('queries', "#{@@queries} (#{t2}s): #{query}") if @debug
+
         result
       rescue StandardError => e
-        ::GDO::Core::Log.error(e.message)
+        ::GDO::Core::Log.exception(e)
+        raise ::GDO::DB::Exception.new(e.to_s).query(query)
       end
     end
 
@@ -97,7 +105,7 @@ module GDO::DB
 
     def init_fields(gdo)
       fields = {}
-      gdo.fields.each {|gdt| fields[gdt.name] = gdt}
+      gdo.fields.each{ |gdt| fields[gdt.name.to_s] = gdt }
       fields
     end
 

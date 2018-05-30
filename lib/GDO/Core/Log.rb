@@ -4,6 +4,10 @@ module GDO::Core
     def self.init(path)
       @@path = path
     end
+    
+    def self.exception(exception)
+      log('error', exception.message)
+    end
 
     def self.error(message)
       log('error', message)

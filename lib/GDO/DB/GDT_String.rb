@@ -35,7 +35,7 @@ module GDO::DB
     ### MySQL ###
     #############
     def column_define
-      "VARCHAR(#{@max})#{column_define_null}#{column_define_default} CHARSET #{column_define_charset} COLLATE #{column_define_collate}"
+      "VARCHAR(#{@max}) CHARSET #{column_define_charset} COLLATE #{column_define_collate} #{column_define_null}#{column_define_default}"
     end
 
     def column_define_charset
