@@ -106,8 +106,13 @@ module GDO::DB
 
     def init_fields(gdo)
       fields = {}
-      gdo.fields.each{ |gdt| fields[gdt.name.to_s] = gdt }
+      gdo.fields.each{ |gdt| fields[gdt._name.to_s] = gdt }
       fields
+    end
+    
+    def self.flush
+      @@tables = {}
+      @@columns = {}
     end
 
 

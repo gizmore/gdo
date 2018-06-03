@@ -8,6 +8,10 @@ module GDO::Core
     def self.exception(exception)
       log('error', exception.message)
     end
+    
+    def self.debug(message)
+      log('debug', message)
+    end
 
     def self.error(message)
       log('error', message)

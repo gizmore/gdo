@@ -7,8 +7,8 @@ module GDO::Core
     end
 
     module InstanceMethods
-      def name; @name; end
-      def with_name(name); @name=name; self; end
+      def _name; @name; end
+      def name(name); @name=name.to_s; self; end
     end
 
     module ClassMethods
@@ -19,7 +19,7 @@ module GDO::Core
       end
 
       def make(name=nil)
-        new.with_name(name||_default_name)
+        new.name(name||_default_name)
       end
     end
 

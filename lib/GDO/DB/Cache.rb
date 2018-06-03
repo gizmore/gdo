@@ -5,7 +5,7 @@ module GDO::DB
     def self.set(key, value); end
     def self.remove(key); end
     def self.delete(key); end
-    def self.flush; end
+    def self.flush; ::GDO::DB::Connection.flush; end
 
     def self.init()
 

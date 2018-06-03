@@ -1,5 +1,5 @@
 module GDO::File
-  def exists?(path)
-
+  class Util
+    
   end
 end

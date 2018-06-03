@@ -9,7 +9,7 @@ module GDO::DB
     end
 
     def render_form
-      ::GDO::Core::GDT_Template.render_template('DB', 'form/select.erb', :field => self)
+      ::GDO::Core::GDT_Template.render_template('DB', 'form_select.erb', :field => self)
     end
 
   end

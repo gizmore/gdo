@@ -4,7 +4,7 @@ module GDO::Core
     is_module __FILE__
     provides_theme 'default'
 
-    def get_config
+    def module_config
       [
           GDT_Theme.make('theme').initial('default'),
       ]

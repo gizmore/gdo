@@ -3,10 +3,10 @@ module GDO::Core
 
     include ::GDO::Core::IsModule
     extend ::GDO::Core::WithInstance
-
-    def self.inherited(klass)
-      puts klass
-    end
+    
+    # def self.inherited(klass)
+      # puts klass
+    # end
 
     def gdo_columns
       [
@@ -24,6 +24,20 @@ module GDO::Core
     def self.provides_theme(theme)
       ::GDO::Core::GDT_Theme.designs[theme] = _path
     end
+    
+    # Language
+    def on_load_language; end
+    def load_language(path)
+      ::GDO::Lang::Trans.instance.add_path("#{@path}/#{path}")
+      self
+    end
+
+    ###############
+    ### Install ###
+    ###############
+    def install
+      # ::GDO::Core::Installer.instance.install_module(self)
+    end
 
     ##############
     ### Config ###
@@ -34,8 +48,9 @@ module GDO::Core
 
     def module_config_var(field)
       module_config.each {|gdt|
-        return gdt if gdt._name == field
+        return gdt if gdt._name == field.to_s
       }
+      raise ::GDO::Core::Exception.new(t(:err_unknown_config, field))
     end
 
     def config_var(field)
@@ -45,6 +60,8 @@ module GDO::Core
     def config_value(field)
       module_config_var(field)._value
     end
+
+
 
     def user_config
       []

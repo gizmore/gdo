@@ -35,6 +35,13 @@ module GDO
   module User; extend Autoloader; end
 end
 
+
+# Global helpers
+::GDO::Lang::Trans.init
+class Object
+  def t(key, *args); ::GDO::Lang::Trans.instance.translate(key, *args); end
+end
+
 ####################
 ### Load plugins ###
 ####################
