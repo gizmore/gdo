@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "GDO/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "GDO"
+  spec.name          = "gdo"
   spec.version       = GDO::VERSION
   spec.authors       = ["gizmore"]
   spec.email         = ["gizmore@wechall.net"]

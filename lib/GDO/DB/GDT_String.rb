@@ -28,8 +28,8 @@ module GDO::DB
     def ascii; encoding(ASCII); end
     def binary; encoding(BINARY); end
 
-    def caseI; @case_i = true; self; end
-    def caseS; @case_i = false; self; end
+    def case_i(i=true); @case_i = i; self; end
+    def case_s(s=true); @case_i = !s; self; end
 
     #############
     ### MySQL ###

@@ -15,7 +15,6 @@ module GDO::DB
     
     def num_rows; byebug; end
     
-    def fetch_value; byebug; end
 #   
   # #############
   # ### Fetch ###
@@ -70,12 +69,16 @@ module GDO::DB
     # return $this->fetchAs($this->table);
   # }
   
-  def fetch_assoc
-    @enum.next
+  def fetch_var(i=0)
+    fetch_row[i]
+  end
+
+  def fetch_row
+    fetch_assoc.values rescue nil
   end
   
-  def fetch_row
-    fetch_assoc.values
+  def fetch_assoc
+    @enum.next rescue nil
   end
   
   def fetch_object
@@ -83,9 +86,9 @@ module GDO::DB
   end
   
   def fetch_as(table)
-    vars = fetch_assoc
+    return nil unless vars = fetch_assoc
     return table._cache.init_cached(vars) if @cached && table.gdo_cached
-    table.blank(vars).persisted
+    return table.blank(vars).persisted
   end
   
 #   

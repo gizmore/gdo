@@ -6,10 +6,6 @@ module GDO::DB
     @@queries_write ||= 0
     @@queries_time ||= 0.0
 
-    @@tables ||= {}
-    @@columns ||= {}
-
-
     def self.instance; @@instance; end
 
     def initialize(hostname, username, password, database, debug=true)
@@ -72,7 +68,7 @@ module GDO::DB
         @queries += 1
         @@queries += 1
         t1 = Time.new
-        result = get_link.query(query)
+        result = get_link.query(query, cast:false)
         t2 = Time.new - t1
         @queries_time += t2
         @@queries_time += t2
@@ -85,11 +81,21 @@ module GDO::DB
         raise ::GDO::DB::Exception.new(e.to_s).query(query)
       end
     end
+    
+    ############
+    ### Util ###
+    ############
+    def insert_id
+      get_link.last_id
+    end
 
     ###################
     ### Table cache ###
     ###################
     @@tables ||= {}
+    @@columns ||= {}
+    def self.flush; @@tables = {}; @@columns = {}; end
+
     def table_for(klass)
       if !@@tables[klass]
         @@tables[klass] = gdo = Object.const_get(klass.name).new
@@ -110,11 +116,7 @@ module GDO::DB
       fields
     end
     
-    def self.flush
-      @@tables = {}
-      @@columns = {}
-    end
-
-
+    ###
+    
   end
 end

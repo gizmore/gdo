@@ -15,6 +15,7 @@ module GDO::Lang
     def add_path(path)
       @pathes.push(path)
       @cache = {}
+      self
     end
 
     def initialize
@@ -29,7 +30,6 @@ module GDO::Lang
     end
     
     def translate_iso(iso, key, *args)
-      byebug
       reload(iso)
       key = key.to_s
       if text = @cache[iso][key]

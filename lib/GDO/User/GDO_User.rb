@@ -15,6 +15,7 @@ module GDO::User
           ::GDO::DB::GDT_AutoInc.make(:user_id),
           ::GDO::User::GDT_Username.make(:user_name).unique.not_null,
           ::GDO::Mail::GDT_Email.make(:user_email).unique,
+          ::GDO::Date::GDT_CreatedAt.make(:user_created_at)
       ]
     end
 

@@ -1,14 +1,39 @@
+#
 module GDO::Core
+  #
+  # GDO is both, an entity and a table object.
+  # You create tables by overriding the "fields" method.
+  # It returns an array of GDTs.
+  # GDT are plugged into GDOs, other GDT like GDT_Form, GDT_Table, Method parameters and more.
+  #
+  # @see ::GDO::Core::GDT
+  #
+  # @version 1.00
+  # @since 1.00
+  # @author gizmore@wechall.net
+  #
   class GDO
 
+    #################
+    ### Overrides ###
+    #################
     # ENGINE
-    MYISAM = "MyISAM"
-    INNODB = "InnoDB"
-    MEMORY = "Memory"
+    MYISAM ||= "MyISAM"
+    INNODB ||= "InnoDB"
+    MEMORY ||= "Memory"
+    # Return storage engine for this GDO table
+    def engine; INNODB; end
 
-    def engine; MYISAM; end
+    # Return true to enable gdo backed cache
     def gdo_cached; false; end
+
+    # Return true to enable memcached backed cache
     def mem_cached; false; end
+
+    #
+    # Database columns
+    # @return Array[::GDO::Core::GDT]
+    #
     def fields; []; end
 
     def initialize
@@ -17,30 +42,50 @@ module GDO::Core
       @persisted = false
     end
 
+    def name; self.class.name; end
+
     ################
     ### Escaping ###
     ################
+    def quote(var); self.class.quote(var); end
     def self.escapeIdentifier(identifier); identifier.to_s.gsub("`", "\\`"); end
     def self.quoteIdentifier(identifier); "`#{self.escapeIdentifier(identifier)}`"; end
     def self.escapeSearch(searchString); self.escape(searchString).gsub('%', '\\%'); end
-    def self.escape(value); value.gsub("'", "\\'").gsub('"', '\\"'); end
-    def self.quote(value)
-      return "NULL" if value.nil?
-      "'#{self.escape(value)}'"
+    def self.escape(var); var.gsub("'", "\\'").gsub('"', '\\"'); end
+    def self.quote(var);
+      return "'#{self.escape(var)}'" if var.is_a?(String)
+      return "NULL" if var.nil?
+      return var if var.is_a?(Numeric)
+      return '1' if var == true
+      return '0' if var == false
+      raise ::GDO::Core::Exception.new(t(:err_cannot_quote, var, var.class.name))
     end
-
 
     ##########
     ### DB ###
     ##########
-    def columns; db.columns_for(self.class); end
-    def column(name); columns[name].gdo(self); end
+    # Get cached columns from db connection
+    def columns
+      db.columns_for(self.class)
+    end
+    
+    # Get cached column from db connection
+    def column(name)
+      column = columns[name.to_s]
+      raise ::GDO::Core::Exception.new(t(:err_gdo_no_column, self.name, name)) if column.nil?
+      column.gdo(self)
+    end
+    
+    # Get db connection
     def db; ::GDO::DB::Connection.instance; end
+    # Get db connection
     def self.db; ::GDO::DB::Connection.instance; end
+    # Get cached table GDO
     def table; self.class.table; end
+    # Get cached table GDO
     def self.table; db.table_for(self); end
-    def name; self.class.name; end
-    def table_name; name.gsub('::', '_'); end
+    def table_name; name.rsubstr_from('::').downcase; end
+    def self.table_name; name.rsubstr_from('::').downcase; end
 
     def _cache; @cache; end
     def init_cache
@@ -64,8 +109,10 @@ module GDO::Core
     def self.blank(data={})
       instance = self.new
       instance.columns.each {|k,gdt|
-        if data.has_key?(k)
-          instance.set_var(k, data[k], true)
+        if data.has_key?(k.to_sym)
+          instance.set_var(k, data[k.to_sym].to_s, true)
+        elsif data.has_key?(k.to_s)
+          instance.set_var(k, data[k.to_s].to_s, true)
         else
           instance.set_var(k, gdt._initial, false)
         end
@@ -73,10 +120,9 @@ module GDO::Core
       instance
     end
 
-    #
-    def drop_table
-      db.query_write("DROP TABLE IF EXISTS #{table_name}")
-    end
+    ###############
+    ### Queries ###
+    ###############
 
     #
     def create_table
@@ -100,18 +146,57 @@ module GDO::Core
       query += "ENGINE = #{engine}\n"
       # Write
       db.query_write(query)
+      self
     end
 
-    def query
-      ::GDO::DB::Query.new.gdo(self)
+    def drop_table
+      db.query_write("DROP TABLE IF EXISTS #{table_name}")
+      self
+    end
+    
+    def truncate_table
+      db.query_write("TRUNCATE TABLE #{table_name}")
+      self
     end
 
-    def insert
-      query.insert.values(dirty_vars).execute
+    def query; ::GDO::DB::Query.new.gdo(self); end
+
+    def query_pk
+      query = self.query
+      primary_key_columns.each {|name,gdt| query.where("#{gdt.identifier}=#{quote(get_var(gdt._name))}") }
+      query
+    end
+
+    def replace; insert(true); end
+
+    def insert(replace=false)
+      query = replace ? self.query.replace : self.query.insert
+      query.values(dirty_vars).execute
       dirty(false).persisted
       recache
       after_create
       self
+    end
+
+    def save
+      if @persisted
+        query = query_pk.update.values(dirty_vars)
+        before_update(query)
+        query.execute
+        dirty(false).persisted
+        recache
+        after_update
+        self
+      else
+        insert
+      end
+    end
+    
+    def delete
+      raise ::GDO::DB::Exception.new(t(:err_delete_unpersisted, name)) unless @persisted
+      query_pk.delete.execute
+      table._cache.uncache_id(get_id)
+      persisted(false)
     end
     
     def recache
@@ -123,14 +208,18 @@ module GDO::Core
     ###############
     ### Columns ###
     ###############
+    def primary_key
+      primary_key_columns.first[1]
+    end
+    
     def primary_key_columns
       pk = {}
       columns.each {|name,gdt|
-        pk[name] = gdt if gdt._primary
+        pk[name] = gdt if gdt._primary || gdt.is_a?(::GDO::DB::GDT_AutoInc)
       }
       pk
     end
-
+    
     #################
     ### Selection ###
     #################
@@ -156,6 +245,27 @@ module GDO::Core
     def select(fields='*')
       query.select(fields)
     end
+    
+    def get_where(where)
+      select().where(where).limit(1).execute.fetch_object
+    end
+    
+    def find_where(where)
+      get_where(where) or raise ::GDO::Core::Exception.new(t(:err_row_not_found))
+    end
+    
+    def get_by(hash)
+      where = ""
+      hash.each{|field,value|
+        where += " AND " unless where.empty?
+        where += "#{field.to_s}=#{::GDO::Core::GDO.quote(value)}"
+      }
+      get_where(where)
+    end
+    
+    def find_by(hash)
+      get_by(hash) or raise ::GDO::Core::Exception.new(t(:err_row_not_found))
+    end
 
     ############
     ### Vars ###
@@ -167,8 +277,17 @@ module GDO::Core
       mark_dirty ? set_dirty(name) : self
     end
 
+    def set_value(name, value, mark_dirty=true)
+      var = column(name).to_var(value)
+      set_var(name, var, mark_dirty)
+    end
+
     def get_var(name)
       @gdo_vars[name.to_s]
+    end
+
+    def get_value(name)
+      column(name.to_s).to_value(get_var(name.to_s))
     end
 
     def get_vars
@@ -179,11 +298,25 @@ module GDO::Core
       @gdo_vars = vars
       dirty
     end
-
-    def get_value(name)
-      column(name.to_s).to_value(get_var(name.to_s))
+    
+    def save_var(name, var)
+      set_var(name, var)
+      save
+    end
+    
+    def save_vars(vars)
+      vars.each{|key, var| set_var(key, var) }
+      save
+    end
+    
+    def save_value(name, value)
+      var = column(name).to_var(value)
+      save_var(name, var)
     end
 
+    ###################
+    ### Dirty flags ###
+    ###################
     def is_dirty?(name)
       (@dirty_vars == true) || (@dirty_vars[name])
     end
@@ -229,9 +362,10 @@ module GDO::Core
     ##############
     ### Events ###
     ##############
-    def after_create
-
-    end
+    def before_create; columns.each{|name,gdt| gdt.before_create(self) }; end
+    def after_create; columns.each{|name,gdt| gdt.after_create(self) }; end
+    def before_update(query); columns.each{|name,gdt| gdt.before_update(self, query) }; end
+    def after_update; columns.each{|name,gdt| gdt.after_update(self) }; end
 
 
   end

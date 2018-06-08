@@ -1,1 +1,1 @@
-gdo: GDO
+err_unknown_config: "Unknown configuration variable: %s."

@@ -5,7 +5,7 @@ module GDO::DB
     INSERT = 'INSERT INTO '
     UPDATE = 'UPDATE '
     SELECT = 'SELECT '
-    DELETE = 'DELETE '
+    DELETE = 'DELETE FROM '
 
     def initialize
       @write = false
@@ -14,6 +14,7 @@ module GDO::DB
       @from = nil
       @limit = nil
       @where = nil
+      @join = nil
       @values = nil
       @cached = true
     end
@@ -57,13 +58,36 @@ module GDO::DB
     def values(values); @values ||= {}; @values.merge!(values); self; end
     def build_values
       return "" unless @values
-      fields = []
-      values = []
-      @values.each {|k,v|
-        fields.push(::GDO::Core::GDO.quoteIdentifier(k))
-        values.push(::GDO::Core::GDO.quote(v))
-      }
-      "(#{fields.join(',')}) VALUES (#{values.join(',')}) "
+      gdo = ::GDO::Core::GDO
+      if @type == UPDATE
+        fields = []
+        @values.each {|k,v|
+          fields.push("#{gdo.quoteIdentifier(k)}=#{gdo.quote(v)}")
+        }
+        "SET #{fields.join(',')} "
+      else
+        fields = []
+        values = []
+        @values.each {|k,v|
+          fields.push(gdo.quoteIdentifier(k))
+          values.push(gdo.quote(v))
+        }
+        "(#{fields.join(',')}) VALUES (#{values.join(',')}) "
+      end
+    end
+    
+    def join(join); @join ||= ''; @join += "#{join} "; self; end
+    def join_object(field)
+      column = @gdo.table.column(field)
+      if column.is_a?(::GDO::DB::GDT_Join)
+        join(column._join)
+      elsif column.is_a?(::GDO::DB::GDT_Object)
+        gdo = column._table
+        join("JOIN #{gdo.table_name} ON #{gdo.primary_key.identifier}=#{column.identifier}")
+      else
+        raise ::GDO::Core::Exception.new(t(:err_cannot_join, field))
+      end
+      
     end
 
     ############
@@ -75,6 +99,7 @@ module GDO::DB
       query += @select if @select
       query += build_from
       query += build_values
+      query += @join if @join
       query += @where if @where
       query += @limit if @limit
       query

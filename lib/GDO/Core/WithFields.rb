@@ -9,6 +9,10 @@ module GDO::Core::WithFields
     def fields
       []
     end
+    
+    def _fields
+      @fields ||= fields
+    end
 
     def field(field)
       @fields[field]

@@ -2,7 +2,6 @@
 # # # BOOT # # #
  # # # ## # # #
 require "GDO/version"
-require "byebug"
 
 ##################
 ### Autoloader ###
@@ -48,10 +47,11 @@ end
 # Now load all plugins
 #Bundler.setup
 #Bundler.load
-require "mysql2"
+# require "mysql2"
 
 #########################
 ### Load Core modules ###
 #########################
+require "GDO/Core/StringUtil"
 require "GDO/Core/Module"
 require "GDO/User/Module"

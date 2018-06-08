@@ -1,11 +1,11 @@
 module GDO::Core
   class GDO_ModuleVar < ::GDO::Core::GDO
     
-    def gdo_columns
+    def fields
       [
-      ::GDO::Core::GDT_Module.make('mv_module').primary,
-      ::GDO::DB::GDT_String('mv_key').primary,
-      ::GDO::DB::GDT_String('mv_value').primary,
+      ::GDO::Core::GDT_Module.make('mv_module').primary.not_null,
+      ::GDO::DB::GDT_String.make('mv_key').primary.not_null,
+      ::GDO::DB::GDT_String.make('mv_value'),
       ]
     end
 
