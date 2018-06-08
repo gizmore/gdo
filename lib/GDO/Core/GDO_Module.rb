@@ -53,9 +53,13 @@ module GDO::Core
     def module_config
       []
     end
+    
+    def module_config_cache
+      @module_config ||= module_config
+    end
 
     def module_config_var(field)
-      module_config.each {|gdt|
+      module_config_cache.each {|gdt|
         return gdt if gdt._name == field.to_s
       }
       raise ::GDO::Core::Exception.new(t(:err_unknown_config, field))
