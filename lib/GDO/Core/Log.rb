@@ -13,6 +13,8 @@ module GDO::Core
     
     def self.exception(exception)
       log('error', exception.message)
+      trace = exception.backtrace || []
+      log('criticial', exception.message + "\n" + trace.join("\n"))
     end
     
     def self.debug(message)

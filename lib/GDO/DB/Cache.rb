@@ -1,11 +1,13 @@
 module GDO::DB
   class Cache
+    
+    include ::GDO::Core::WithEvents
 
     def self.get(key); end
     def self.set(key, value); end
     def self.remove(key); end
     def self.delete(key); end
-    def self.flush; ::GDO::DB::Connection.flush; end
+    def self.flush; end
 
     def self.init()
 
@@ -15,6 +17,10 @@ module GDO::DB
       @gdo = gdo
       @cache = {}
       @dummy = nil
+      subscribe(:gdo_cache_flush) do
+        @cache = {}
+        @dummy = nil
+      end
     end
 
     def dummy

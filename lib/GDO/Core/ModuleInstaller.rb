@@ -71,6 +71,7 @@ module GDO::Core
     end
     
     def update_module_to(mod, version)
+      byebug
       klass = Object.const_get("#{mod.module_package}::Upgrade#{version}") rescue nil
       return false if klass.nil?
       klass.new.upgrade

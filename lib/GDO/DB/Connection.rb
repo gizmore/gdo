@@ -1,5 +1,7 @@
 module GDO::DB
   class Connection
+    
+    include ::GDO::Core::WithEvents
 
     @@queries ||= 0
     @@queries_read ||= 0
@@ -20,6 +22,10 @@ module GDO::DB
       @queries_write = 0
       @queries_time = 0.0
       @@instance = self
+    end
+
+    subscribe(:gdo_cache_flush) do
+      flush
     end
 
     ###############

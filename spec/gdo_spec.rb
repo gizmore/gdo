@@ -32,7 +32,7 @@ module GDO
     class Upgrade1_01
       def upgrade
         byebug
-        ::GDO::Test::TestModule.instance.save_var('skv_key', '1.01')
+        ::GDO::Test::TestModule.instance.save_config_var(:test_setting, 'hubby')
       end
     end
     
@@ -48,7 +48,7 @@ module GDO
       # Module config vars
       def module_config
         [
-          ::GDO::DB::GDT_String.make('skv_key').initial('stubby')
+          ::GDO::DB::GDT_String.make('test_setting').initial('stubby')
         ]
       end
       
@@ -112,7 +112,7 @@ module GDO
     end
     
     it "can flush all caches" do
-      ::GDO::DB::Cache.flush # TODO: more cache tests
+      ::GDO::Core::Application.clear_cache # TODO: more cache tests
     end
     
     it "can install gdo modules" do
@@ -147,22 +147,19 @@ module GDO
       # Load the test module
       mod = ::GDO::Test::TestModule.instance; expect(mod).to be_truthy
       # Load the initial config value
-      expect(mod.config_var(:skv_key)).to eq('stubby')
+      expect(mod.config_var(:test_setting)).to eq('stubby')
       # Alter the config value
-      mod.set_config_var(:skv_key, 'hubby')
-      expect(mod.config_var(:skv_key)).to eq('hubby')
+      mod.set_config_var(:test_setting, 'hubby')
+      expect(mod.config_var(:test_setting)).to eq('hubby')
       
       # Flush cache
-      ::GDO::DB::Cache.flush
-      
+      ::GDO::Core::Application.clear_cache
+      mod2 = ::GDO::Test::TestModule.instance
+      expect(mod != mod2).to be_truthy
+
       # Reload config var
-      expect(mod.config_var(:skv_key)).to eq('hubby')
-      
-      
+      expect(mod.config_var(:test_setting)).to eq('hubby')
     end
 
-
-
   end
-
 end
