@@ -32,6 +32,8 @@ module GDO::DB
     ### Connect ###
     ###############
     def get_link
+      
+      # No cached link?
       if !@link
         begin
           t1 = Time.new
@@ -49,9 +51,11 @@ module GDO::DB
           ::GDO::Core::Log.exception(e)
           raise ::GDO::DB::Exception.new(e.to_s).query("GDO connection failure.")
         end
-        query("SET NAMES UTF8")
+        query("SET NAMES utf8")
      end
-      @link
+     
+     # Cached link
+     @link
     end
 
     ###################
@@ -71,21 +75,35 @@ module GDO::DB
 
     def query(query)
       begin
-        @queries += 1
+        # might connect
+        link = get_link
+        
+        # stats begin
+        @queries += 1 
         @@queries += 1
         t1 = Time.new
-        result = get_link.query(query, cast:false)
+
+        # Actual query
+        result = link.query(query, cast:false)
+
+        # stats end
         t2 = Time.new - t1
         @queries_time += t2
         @@queries_time += t2
-
-        ::GDO::Core::Log.raw('queries', "#{@@queries} (#{t2}s): #{query}") if @debug
-
+        
+        # log
+        if @debug
+          ::GDO::Core::Log.raw('queries', "#{@@queries} (#{t2}s): #{query}")
+        end
+        
+        # yay result
         result
+        
       rescue StandardError => e
-        ::GDO::Core::Log.exception(e)
-        raise ::GDO::DB::Exception.new(e.to_s).query(query)
+        ::GDO::Core::Log.exception(e) # log MySQL2 exception
+        raise ::GDO::DB::Exception.new(e.to_s).query(query) # turn to GDO::DB::Exception
       end
+      
     end
     
     ############

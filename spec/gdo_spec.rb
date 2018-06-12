@@ -153,12 +153,18 @@ module GDO
       expect(mod.config_var(:test_setting)).to eq('hubby')
       
       # Flush cache
-      ::GDO::Core::Application.clear_cache
+      ::GDO::Core::Application.reload_gdo
       mod2 = ::GDO::Test::TestModule.instance
       expect(mod != mod2).to be_truthy
-
-      # Reload config var
-      expect(mod.config_var(:test_setting)).to eq('hubby')
+      expect(mod2.config_var(:test_setting)).to eq('stubby')
+      
+      #
+      mod2.save_config_var(:test_setting, 'hubby')
+      expect(mod2.config_var(:test_setting)).to eq('hubby')
+      ::GDO::Core::Application.clear_cache
+      ::GDO::Core::ModuleLoader.init
+      mod2 = ::GDO::Test::TestModule.instance
+      expect(mod2.config_var(:test_setting)).to eq('hubby')
     end
 
   end

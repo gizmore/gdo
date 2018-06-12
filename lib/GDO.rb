@@ -38,7 +38,16 @@ end
 # Global helpers
 ::GDO::Lang::Trans.init
 class Object
+
+  # I18n
   def t(key, *args); ::GDO::Lang::Trans.instance.translate(key, *args); end
+
+  # Module
+  def gdo_module(name); ::GDO::Core::ModuleLoader.instance.module(name); end
+
+  # Reload
+  def reload; self.class.reload; end
+  def self.reload; load(name.gsub('::','/')+".rb") if is_a?(::Class) && (!is_a?(::Module)); end
 end
 
 ####################

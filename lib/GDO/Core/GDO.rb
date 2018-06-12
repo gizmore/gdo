@@ -294,9 +294,9 @@ module GDO::Core
       @gdo_vars
     end
 
-    def set_vars(vars)
+    def set_vars(vars, dirty=true)
       @gdo_vars = vars
-      dirty
+      dirty ? self.dirty : self
     end
     
     def save_var(name, var)

@@ -1,3 +1,7 @@
+#
+# Own "WithInstance" decorator.
+# @since 1.00
+#
 module GDO::Core::WithInstance
   
   include ::GDO::Core::WithEvents
@@ -16,16 +20,20 @@ module GDO::Core::WithInstance
     instance
   end
   
+  # def reload
+    # load name.gsub('::', '/')
+  # end
+#   
+  #
+  # On a cache flush we remove all WithInstance instances
+  # @see ::GDO::Core::WithEvents
+  #
   subscribe(:gdo_cache_flush) do
-    
-    
-    ::GDO::Core::Util.all_classes(::GDO) do |klass|
-      puts klass.to_s
-      klass.remove_class_variable('@@gdo_instance') if klass.class_variable_defined?('@@gdo_instance')
+    ::GDO::Core::Util.each_class(::GDO) do |klass|
+      if klass.class_variable_defined?('@@gdo_instance')
+        klass.remove_class_variable('@@gdo_instance')
+      end
     end
   end
-  
-    
-    
 
 end
