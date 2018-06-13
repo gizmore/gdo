@@ -140,7 +140,22 @@ module GDO::DB
       fields
     end
     
-    ###
+    ####################
+    ### Foreign Keys ###
+    ####################
+    def foreign_keys(bool=true)
+      bool = bool ? "1" : "0"
+      query("SET FOREIGN_KEY_CHECKS=#{bool}")
+    end
+    
+    def without_foreign_keys(&block)
+      begin
+        foreign_keys(false)
+        yield
+      ensure
+        foreign_keys(true)
+      end
+    end
     
   end
 end

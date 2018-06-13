@@ -15,7 +15,9 @@ module GDO::Core::IsModule
   module ClassMethods
 
     def is_module(path)
-      ::GDO::Core::ModuleLoader.instance.add_module(new.path(File.dirname(path)))
+      raise ::GDO::Core::Exception.new("A GDO Module has to be named Module: "+self.name) if self.name.rsubstr_from('::') != 'Module'
+      ::GDO::Core::Log.info("Added GDO Module: #{name} in #{path}")
+      ::GDO::Core::ModuleLoader.instance.add_module(instance.path(File.dirname(path)))
     end
     
   end

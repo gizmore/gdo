@@ -1,4 +1,8 @@
+#
 module GDO::Core
+  #
+  #
+  #
   class Application
     
     include ::GDO::Core::WithEvents
@@ -30,9 +34,16 @@ module GDO::Core
     ##############
     ### Reload ###
     ##############
+    #
+    # Flush every cache and reload all classes
+    #
     def self.reload_gdo
       # Clear
       clear_cache
+
+      # Clear events. they will be rehooked
+      ::GDO::Core::WithEvents.class_variable_set(::GDO::Core::WithEvents::EVENT_KEY, {})
+
       # Reload code
       ::GDO::Core::Util.each_constant(::GDO) do |const|
         const.reload

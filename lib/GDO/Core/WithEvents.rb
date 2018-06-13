@@ -2,14 +2,14 @@ module GDO::Core::WithEvents
 
   def self.included(base); base.extend(self); end
   
-  EVENT_KEY = :@@gdo_events
+  EVENT_KEY ||= :@@gdo_events
   
   def all_subscriptions
     GDO::Core::WithEvents.class_variable_defined?(EVENT_KEY) ?
       GDO::Core::WithEvents.class_variable_get(EVENT_KEY) :
       GDO::Core::WithEvents.class_variable_set(EVENT_KEY, {})
   end
-
+  
   def event_subscriptions(event)
     all_subscriptions[event] ||= []
   end
@@ -27,7 +27,6 @@ module GDO::Core::WithEvents
       rescue StandardError => e
         ::GDO::Core::Log.exception(e)
         raise e
-        # bot.log_exception(e)
       end
     end
   end

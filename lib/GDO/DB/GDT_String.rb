@@ -19,9 +19,9 @@ module GDO::DB
     def _pattern; @pattern; end
     def pattern(pattern); @pattern = pattern; end
 
-    UTF8 = 1
-    ASCII = 2
-    BINARY = 3
+    UTF8 ||= 1
+    ASCII ||= 2
+    BINARY ||= 3
     def _encoding; @encoding; end
     def encoding(encoding); @encoding = encoding; self; end
     def utf8; encoding(UTF8); end

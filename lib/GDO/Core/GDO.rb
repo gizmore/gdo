@@ -65,6 +65,7 @@ module GDO::Core
     ### DB ###
     ##########
     # Get cached columns from db connection
+    # @return {String,::GDO::Core::GDT}
     def columns
       db.columns_for(self.class)
     end
@@ -108,6 +109,7 @@ module GDO::Core
     def blank(data); self.class.blank(data); end
     def self.blank(data={})
       instance = self.new
+      # blank columns with correct dirty flags
       instance.columns.each {|k,gdt|
         if data.has_key?(k.to_sym)
           instance.set_var(k, data[k.to_sym].to_s, true)
@@ -116,6 +118,10 @@ module GDO::Core
         else
           instance.set_var(k, gdt._initial, false)
         end
+      }
+      # remaining
+      data.each{|k,v|
+        instance.set_var(k, v, false)
       }
       instance
     end
@@ -150,12 +156,18 @@ module GDO::Core
     end
 
     def drop_table
-      db.query_write("DROP TABLE IF EXISTS #{table_name}")
+      db.query_write("DELETE FROM #{table_name}") rescue nil # Trigger cascades
+      db.without_foreign_keys do
+        db.query_write("DROP TABLE IF EXISTS #{table_name}") # drop afterwards
+      end
       self
     end
     
     def truncate_table
-      db.query_write("TRUNCATE TABLE #{table_name}")
+      db.query_write("DELETE FROM #{table_name}") rescue nil # Trigger cascades
+      db.without_foreign_keys do
+        db.query_write("TRUNCATE TABLE #{table_name}") # truncate afterwards
+      end
       self
     end
 
@@ -192,19 +204,34 @@ module GDO::Core
       end
     end
     
+    #
+    # Delete this row.
+    #
     def delete
+      # Can only delete persisted rows
       raise ::GDO::DB::Exception.new(t(:err_delete_unpersisted, name)) unless @persisted
+      # DB query
       query_pk.delete.execute
-      table._cache.uncache_id(get_id)
+      # Uncache
+      table = self.table
+      table._cache.uncache_id(get_id) if table._cache
+      # Dirty and persisted flags
       persisted(false)
+      dirty(true)
     end
     
+    # Return a delete query
+    # @return ::GDO::DB::Query
+    def delete_query
+      table.query.delete
+    end
+
     def recache
       table = self.table
       table._cache.recache(self) if table._cache
       self
     end
-
+    
     ###############
     ### Columns ###
     ###############
@@ -271,9 +298,10 @@ module GDO::Core
     ### Vars ###
     ############
     def persisted(persisted=true); @persisted = persisted; self; end
+    def persisted?; @persisted; end
 
     def set_var(name, var, mark_dirty=true)
-      @gdo_vars[name.to_s] = var
+      @gdo_vars[name.to_s] = var.to_s
       mark_dirty ? set_dirty(name) : self
     end
 

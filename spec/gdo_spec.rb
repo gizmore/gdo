@@ -31,12 +31,11 @@ module GDO
     
     class Upgrade1_01
       def upgrade
-        byebug
-        ::GDO::Test::TestModule.instance.save_config_var(:test_setting, 'hubby')
+        ::GDO::Test::Module.instance.save_config_var(:test_setting, 'stubby v1.01')
       end
     end
     
-    class TestModule < ::GDO::Core::GDO_Module
+    class Module < ::GDO::Core::GDO_Module
       
       is_module __FILE__
       
@@ -58,6 +57,10 @@ module GDO
       
       def user_settings
         
+      end
+      
+      def self.reload
+        is_module __FILE__
       end
       
     end
@@ -84,11 +87,11 @@ module GDO
     end
 
     # Actually a db load fails and this sucks as it is rescue nil
-    it "can load modules" do
-      ::GDO::Core::ModuleLoader.init
-      expect(::GDO::Core::Module.instance).to be_truthy
-      expect(::GDO::Core::Module.instance).to be_a(::GDO::Core::Module)
-    end
+    # it "can load modules" do
+      # ::GDO::Core::ModuleLoader.init
+      # expect(::GDO::Core::Module.instance).to be_truthy
+      # expect(::GDO::Core::Module.instance).to be_a(::GDO::Core::Module)
+    # end
 
     it "can create gdo in memory" do
       kv = GDO::SPECSimpleKV.blank("skv_key" => 'version', "skv_value" => '1.0.0')
@@ -104,36 +107,36 @@ module GDO
       ::GDO::SPECSimpleKV.table.create_table
     end
     
-    # This test is my full pride!
     it "has a working gdo selection cache" do
       row = ::GDO::SPECSimpleKV.blank("skv_key" => 'version', "skv_value" => '1.0.1').insert # insert a row
       expect(::GDO::SPECSimpleKV.table.find('version')).to equal(row) # select from cache uses EQUAL as test; Same instance
       expect(::GDO::SPECSimpleKV.table.find('version').get_var(:skv_value)).to eq('1.0.1') # still same instance
     end
     
-    it "can flush all caches" do
-      ::GDO::Core::Application.clear_cache # TODO: more cache tests
-    end
-    
     it "can install gdo modules" do
       installer = ::GDO::Core::ModuleInstaller.instance
-      
-      # ::GDO::Core::GDO_Module.table.truncate_table
+      installer.install_module ::GDO::Core::Module.instance
+
+      installer.drop_module ::GDO::Core::Module.instance
+      installer.drop_module ::GDO::User::Module.instance
+      installer.drop_module ::GDO::Test::Module.instance
       
       installer.install_module ::GDO::Core::Module.instance
       installer.install_module ::GDO::User::Module.instance
-      installer.install_module ::GDO::Test::TestModule.instance
+      installer.install_module ::GDO::Test::Module.instance
       expect(::GDO::Core::GDO_Module.table.select('COUNT(*)').execute.fetch_var).to eq('3') # now 3 modules in db
 
-      installer.install_module ::GDO::Test::TestModule.instance
+      installer.install_module ::GDO::Test::Module.instance
       expect(::GDO::Core::GDO_Module.table.select('COUNT(*)').execute.fetch_var).to eq('3') # still 3 modules in db
     end
 
     
     it "can upgrade gdo modules" do
-      ::GDO::Test::TestModule.instance.version_up # hack in test module
-      ::GDO::Core::ModuleInstaller.instance.install_module ::GDO::Test::TestModule.instance # install again
-      expect(::GDO::Test::TestModule.instance.module_version).to eq('1.01')
+      ::GDO::Core::Application.reload_gdo
+      ::GDO::Test::Module.instance.version_up # hack in test module
+      ::GDO::Core::ModuleInstaller.instance.install_module ::GDO::Test::Module.instance # install again
+      expect(::GDO::Test::Module.instance.module_version).to eq('1.01')
+      expect(::GDO::Test::Module.instance.config_var(:test_setting)).to eq('stubby v1.01')
       expect(::GDO::Core::GDO_Module.table.select('COUNT(*)').execute.fetch_var).to eq('3') # still 3
     end
 
@@ -144,8 +147,14 @@ module GDO
     
     
     it "can configure module vars" do
+
+      ::GDO::Core::Application.reload_gdo
+      expect(::GDO::Test::Module.instance.config_var(:test_setting)).to eq('stubby v1.01')
+
       # Load the test module
-      mod = ::GDO::Test::TestModule.instance; expect(mod).to be_truthy
+      mod = ::GDO::Test::Module.instance; expect(mod).to be_truthy
+      mod.delete_config_var(:test_setting)
+
       # Load the initial config value
       expect(mod.config_var(:test_setting)).to eq('stubby')
       # Alter the config value
@@ -154,16 +163,17 @@ module GDO
       
       # Flush cache
       ::GDO::Core::Application.reload_gdo
-      mod2 = ::GDO::Test::TestModule.instance
+      mod2 = ::GDO::Test::Module.instance
       expect(mod != mod2).to be_truthy
       expect(mod2.config_var(:test_setting)).to eq('stubby')
       
-      #
+      # Save var
       mod2.save_config_var(:test_setting, 'hubby')
       expect(mod2.config_var(:test_setting)).to eq('hubby')
-      ::GDO::Core::Application.clear_cache
-      ::GDO::Core::ModuleLoader.init
-      mod2 = ::GDO::Test::TestModule.instance
+
+      # Reload
+      ::GDO::Core::Application.reload_gdo
+      mod2 = ::GDO::Test::Module.instance
       expect(mod2.config_var(:test_setting)).to eq('hubby')
     end
 

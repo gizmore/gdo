@@ -50,7 +50,6 @@ module GDO::Core
     
     #
     def create_module(mod)
-      byebug
       mod.class.blank(
         module_name: mod.module_name,
         module_version: mod.version.to_s,
@@ -71,11 +70,9 @@ module GDO::Core
     end
     
     def update_module_to(mod, version)
-      byebug
-      klass = Object.const_get("#{mod.module_package}::Upgrade#{version}") rescue nil
-      return false if klass.nil?
-      klass.new.upgrade
-      true
+      ::GDO::Core::Log.info("Upgrading module #{mod.module_name} to v#{version}")
+      klass = Object.const_get("::GDO::#{mod.module_name}::Upgrade#{version}") rescue nil
+      klass.new.upgrade if klass
     end
     
     ############
@@ -83,7 +80,8 @@ module GDO::Core
     ############
     def drop_module(mod)
       ::GDO::Core::Log.info "ModuleInstaller.drop_module(#{mod.module_name})"
-      drop_module_tables(mod.delete)
+      mod.delete if mod.persisted?
+      drop_module_tables(mod)
     end
     
     def drop_module_tables(mod)

@@ -1,11 +1,19 @@
+#
 module GDO::DB
+  #
+  # GDO Query builder
+  #
+  # @version 1.00
+  # @since 1.00
+  # @author gizmore
+  #
   class Query
 
-    REPLACE = 'REPLACE INTO '
-    INSERT = 'INSERT INTO '
-    UPDATE = 'UPDATE '
-    SELECT = 'SELECT '
-    DELETE = 'DELETE FROM '
+    REPLACE ||= 'REPLACE INTO '
+    INSERT ||= 'INSERT INTO '
+    UPDATE ||= 'UPDATE '
+    SELECT ||= 'SELECT '
+    DELETE ||= 'DELETE FROM '
 
     def initialize
       @write = false

@@ -13,6 +13,7 @@ module GDO::Lang
     def _iso; @iso; end
 
     def add_path(path)
+      ::GDO::Core::Log.info("::GDO::Lang::Trans.add_path(#{path})")
       @pathes.push(path)
       @cache = {}
       self

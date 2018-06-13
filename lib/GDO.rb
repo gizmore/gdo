@@ -26,8 +26,10 @@ module GDO
   module File; extend Autoloader; end
   module Form; extend Autoloader; end
   module Install; extend Autoloader; end
+  module Javascript; extend Autoloader; end
   module Lang; extend Autoloader; end
   module Mail; extend Autoloader; end
+  module Method; extend Autoloader; end
   module Net; extend Autoloader; end
   module Table; extend Autoloader; end
   module UI; extend Autoloader; end
@@ -46,8 +48,26 @@ class Object
   def gdo_module(name); ::GDO::Core::ModuleLoader.instance.module(name); end
 
   # Reload
-  def reload; self.class.reload; end
-  def self.reload; load(name.gsub('::','/')+".rb") if is_a?(::Class) && (!is_a?(::Module)); end
+  def reload
+    if is_a?(::Module)
+      begin
+        path = name.gsub('::','/')+".rb"
+        load(path)
+        # ::GDO::Core::Log.debug("Reloaded GDO module #{name} from #{path}")
+      rescue LoadError => e
+      end
+    end
+  end
+  def self.reload
+    if is_a?(::Class)
+      begin
+        path = name.gsub('::','/')+".rb"
+        load(path)
+        # ::GDO::Core::Log.debug("Reloaded GDO class #{name} from #{path}")
+      rescue LoadError => e
+      end
+    end
+  end
 end
 
 ####################
