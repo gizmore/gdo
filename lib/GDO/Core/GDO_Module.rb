@@ -1,6 +1,9 @@
 #
 module GDO::Core
   #
+  # Modules are autoloaded across installations.
+  # Read DOC_CreateModules.md to learn about gdo modules.
+  #
   # You can override the following methods
   # - tables: GDOs managed by your module
   # - version: This is the fs version of your module

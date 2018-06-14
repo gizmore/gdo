@@ -1,39 +1,23 @@
-# Gdo
+# GDO(Ruby)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/gdo`. To experiment with that code, run `bin/console` for an interactive prompt.
+This is the official ruby port of GDO6(PHP).
 
-TODO: Delete this and the text above, and describe your gem
+This is a working draft since 2 or 3 weeks now.
+Assume this to be unstable (the API will change) and shitty (stupid design estethics and inconsitencies),
+but maybe there will be a real "gdor"(Ruby) successor soon.
 
-## Installation
+## What is GDO?
 
-Add this line to your application's Gemfile:
+GDO(Ruby) is short for "gizmore data objects".
 
-```ruby
-gem 'gdo'
-```
+GDO(Ruby) is the successor of GDO6(PHP) https://github.com/gizmore/gdo6
 
-And then execute:
+GDO is a framework that combines all my knowledge and experience from various frameworks into one single, low dependency framework.
 
-    $ bundle
+It comes with an own DBA (no ActiveRecord) and, as stated above, has almost no dependencies.
 
-Or install it yourself as:
+GDO is test driven.
 
-    $ gem install gdo
+This is work in progress.
+Check back soon!
 
-## Usage
-
-TODO: Write usage instructions here
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/gdo.
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
