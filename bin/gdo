@@ -1,4 +1,28 @@
 #!/usr/bin/env ruby
 
-puts ARGV.inspect
+require 'rubygems'
+require 'bundler/setup'
+
+Bundler.require(:default)
+require "mysql2"
+
+module_name = ARGV[0]
+method_name = ARGV[1]
+
+ENV["GDO_ENV"] ||= "dev"
+ENV["GDO_LOG_LEVEL"] ||= "4"
+ENV["GDO_LOG_PATH"] ||= "~/.gdo/logs/"
+
+ENV["GDO_DB_HOST"] ||= "localhost"
+ENV["GDO_DB_USER"] ||= "rubygdo"
+ENV["GDO_DB_PASS"] ||= "rubygdo"
+ENV["GDO_DB_NAME"] ||= "rubygdo"
+ENV["GDO_DB_DEBUG"] ||= "1"
+
+::GDO::Core::Log.init(ENV["GDO_LOG_PATH"], ENV["GDO_LOG_LEVEL"])
+::GDO::DB::Connection.new(ENV['GDO_DB_HOST'], ENV['GDO_DB_USER'], ENV['GDO_DB_PASS'], ENV['GDO_DB_NAME'], ENV['GDO_DB_DEBUG'])
+::GDO::Core::ModuleLoader.init
+
+
+method = gdo_module(ARGV[0]).method(ARGV[1])
 

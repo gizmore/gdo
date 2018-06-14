@@ -7,8 +7,9 @@ module GDO::Core
     ERROR ||= 1
     CRITICAL ||= 0
 
-    def self.init(path)
+    def self.init(path, level)
       @@path = "#{File.dirname(path)}/protected/logs"
+      @@level = level
     end
 
     def self.exception(exception)

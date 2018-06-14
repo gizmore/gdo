@@ -13,7 +13,7 @@ module GDO::Core
     
     def self.init
       instance = self.instance
-      instance.load_module_vars #rescue nil
+      instance.load_module_vars rescue nil
       instance.init_modules
       instance.inited_modules
     end
@@ -23,6 +23,10 @@ module GDO::Core
         ::GDO::Core::Log.info("loading module #{name}")
         mod.on_load_language
       }
+    end
+    
+    def get_module(name)
+      Object.const_get("::GDO::#{name}::Module").instance
     end
 
     def load_module_vars
