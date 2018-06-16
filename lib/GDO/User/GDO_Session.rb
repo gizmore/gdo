@@ -12,7 +12,7 @@ module GDO::User
 
     def fields
       [
-        ::GDO::DB::AutoInc.make('sess_id'),
+        ::GDO::DB::GDT_AutoInc.make('sess_id'),
         ::GDO::DB::GDT_Token.make('sess_sid'),
         ::GDO::User::GDT_User.make('sess_user'),
       ]

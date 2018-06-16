@@ -7,19 +7,30 @@ module GDO::Core
     end
 
     module InstanceMethods
+      ### Name
       def _name; @name; end
-      def name(name); @name=name.to_s; self; end
+      def name(name); @name = name.to_s; self; end
+      
+      ### Label
+      def _label; @label; end
+      def label(label); @label = label.to_s; self; end
     end
 
     module ClassMethods
-      def _default_name
+      def default_name
         @@name ||= 0
         @@name += 1
         "gdo#{@@name}"
       end
+      
+      def default_label; nil; end
 
+      ###############
+      ### Factory ###
+      ###############
       def make(name=nil)
-        new.name(name||_default_name)
+        instance = new.name(name||default_name)
+        instance.label(default_label)
       end
     end
 

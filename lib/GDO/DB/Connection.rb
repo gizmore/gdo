@@ -1,7 +1,7 @@
 module GDO::DB
   class Connection
     
-    include ::GDO::Core::WithEvents
+    extend ::GDO::Core::WithEvents
 
     @@queries ||= 0
     @@queries_read ||= 0

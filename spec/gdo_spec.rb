@@ -2,12 +2,9 @@
 # Show me your specs and i learn how to use your gem :)
 # This is more worth than any doc
 #
-require 'rubygems'
-require 'bundler'
-Bundler.require(:default)
-
 require "byebug"
 require "mysql2"
+require "gdo"
 
 # Test classes
 module GDO
@@ -175,6 +172,14 @@ module GDO
       ::GDO::Core::Application.reload_gdo
       mod2 = ::GDO::Test::Module.instance
       expect(mod2.config_var(:test_setting)).to eq('hubby')
+    end
+    
+    it "can create an admin user" do
+      ::GDO::User::GDO_User.blank(
+        user_name: "gizmore",
+        user_password: ::GDO::Crypto::GDT_PasswordHash.hash('11111111'),
+        
+      ).insert
     end
 
   end

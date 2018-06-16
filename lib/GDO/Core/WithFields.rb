@@ -13,9 +13,21 @@ module GDO::Core::WithFields
     def _fields
       @fields ||= fields
     end
+    
+    def add_field(field)
+      _fields.push(field)
+      self
+    end
+    
+    def add_fields(*fields)
+      _fields << fields
+      self
+    end
+
 
     def field(field)
-      @fields[field]
+      _fields.each{|gdt| return gdt if gdt._name == field.to_s }
+      raise ::GDO::Core::Exception.new(t(:err_unknown_field, field, self.class.name))
     end
 
     def set_var(field, var)
@@ -32,6 +44,12 @@ module GDO::Core::WithFields
 
     def get_value(field)
 
+    end
+    
+    def fields_of(klass)
+      _fields.select{|gdt|
+        gdt.is_a?(klass)
+      }
     end
 
   end

@@ -1,11 +1,10 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "GDO/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "gdo"
-  spec.version       = GDO::VERSION
+  spec.version       = 1.00
   spec.authors       = ["gizmore"]
   spec.email         = ["gizmore@wechall.net"]
 
@@ -36,6 +35,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "byebug", "~> 10.0"
 
+  spec.add_dependency "bcrypt", "~> 3.1"
   spec.add_dependency "mysql2", "~> 0.5"
 #  spec.add_dependency "memcached", "~> 1.8"
 end

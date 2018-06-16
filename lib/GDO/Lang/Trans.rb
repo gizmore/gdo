@@ -1,19 +1,28 @@
 require 'yaml'
-
+#
 module GDO::Lang
+  #
+  # Very basic I18n class.
+  # Should be faster than I18n from rails.
+  #
+  # @version 1.00
+  # @since 1.00
+  # @license MIT
+  # @author gizmore@wechall.net
+  #
   class Trans
-
-    def self.instance; @@instance; end
     
-    def self.init
-      new
+    include ::GDO::Core::WithInstance
+    
+    def self.init(iso='en')
+      instance.iso(iso)
     end
     
     def iso(iso); @iso = iso.to_s; self; end
     def _iso; @iso; end
 
     def add_path(path)
-      ::GDO::Core::Log.info("::GDO::Lang::Trans.add_path(#{path})")
+      ::GDO::Core::Log.debug("::GDO::Lang::Trans.add_path(#{path})")
       @pathes.push(path)
       @cache = {}
       self
@@ -21,7 +30,6 @@ module GDO::Lang
 
     def initialize
       @iso = 'en'
-      @@instance = self
       @pathes = []
       @cache = {}
     end

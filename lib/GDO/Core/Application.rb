@@ -5,7 +5,7 @@ module GDO::Core
   #
   class Application
     
-    include ::GDO::Core::WithEvents
+    extend ::GDO::Core::WithEvents
 
     def self.init
       

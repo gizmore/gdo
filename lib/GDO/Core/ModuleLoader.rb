@@ -26,7 +26,11 @@ module GDO::Core
     end
     
     def get_module(name)
-      Object.const_get("::GDO::#{name}::Module").instance
+      begin
+        Object.const_get("::GDO::#{name}::Module").instance
+      rescue
+        raise ::GDO::Core::Exception.new(t(:err_module, name))
+      end
     end
 
     def load_module_vars
@@ -54,26 +58,5 @@ module GDO::Core
       }
     end
     
-    #############
-    ### Cache ###
-    #############
-    # subscribe(:gdo_cache_flush) do
-      # byebug
-      # instance
-      # ::GDO::Core::Util.each_class(::GDO) do |klass|
-        # byebug if klass.is_a?(::GDO::Core::GDO_Module)
-        # klass.instance if klass.is_a?(::GDO::Core::GDO_Module)
-      # end
-    # end
-    
-    # def flush
-      # mods = @modules
-      # @modules = {}
-      # mods.each do |klass,mod|
-        # klass.reload
-      # end
-    # end
-#     
-
   end
 end

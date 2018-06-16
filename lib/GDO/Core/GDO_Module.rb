@@ -23,8 +23,9 @@ module GDO::Core
   #
   class GDO_Module < ::GDO::Core::GDO
 
+    include ::GDO::Core::WithEvents
+    include ::GDO::Core::WithInstance
     include ::GDO::Core::IsModule
-    extend ::GDO::Core::WithInstance
 
     #################
     ### Overrides ###
@@ -59,6 +60,19 @@ module GDO::Core
     def module_name; self.class.name.split('::')[-2]; end
     def module_version; get_var('module_version') || version; end
     def module_enabled; get_var('module_enabled') || default_enabled; end
+
+    ###############
+    ### Install ###
+    ###############
+    def install; ::GDO::Core::ModuleInstaller.instance.install_module self; end
+    
+    ###############
+    ### Package ###
+    ###############
+    def module_package; self.class.module_package; end
+    def module_package_name; self.class.module_package_name; end
+    def self.module_package; ::Object.const_get(module_package_name); end
+    def self.module_package_name; self.to_s.rsubstr_to('::'); end
     
     ############
     ### Path ###
@@ -80,6 +94,17 @@ module GDO::Core
       ::GDO::Lang::Trans.instance.add_path("#{@path}/#{path}")
       self
     end
+    
+    ###############
+    ### Methods ###
+    ###############
+    def gdo_method(method_name)
+      const_name = "::GDO::#{self.module_name}::Method::#{method_name}"
+      const = Object.const_get(const_name)
+      raise ::GDO::Core::Exception.new(t(:err_unknown_method, module_name, method_name)) if const.nil?
+      const.instance
+    end
+    
 
     ##############
     ### Config ###

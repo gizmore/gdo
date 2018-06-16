@@ -1,6 +1,18 @@
+#
+# Very simple event library.
+# Will survive reload and cache flush.
+#
+# @version 1.00
+# @since 1.00
+# @license MIT
+# @author gizmore@wechall.nets
+#
 module GDO::Core::WithEvents
-
-  def self.included(base); base.extend(self); end
+  
+  # def self.included(base)
+    # ::GDO::Core::Log.debug("included WithEvents... extending #{base}")
+    # base.extend(self)
+  # end
   
   EVENT_KEY ||= :@@gdo_events
   
@@ -15,13 +27,14 @@ module GDO::Core::WithEvents
   end
 
   def subscribe(event, &block)
-    # bot.log_debug(display_subscribed(event, block))
+    ::GDO::Core::Log.debug(display_subscribed(event, block))
     event_subscriptions(event).push(block)
   end
 
   def publish(event, *event_args)
+    ::GDO::Core::Log.debug("GDO::Core::WithEvents.publish(#{event}, #{event_args.inspect})")
     event_subscriptions(event).each do |subscription|
-      # bot.log_debug(display_publish_consumed(event, subscription))
+      ::GDO::Core::Log.debug(display_publish_consumed(event, subscription))
       begin
         subscription.call(*event_args)
       rescue StandardError => e
@@ -44,7 +57,7 @@ module GDO::Core::WithEvents
   
   def subscription_location(subscription)
     sl = subscription.source_location
-    file = sl[0].substr_from('/plugins/')
+    file = sl[0].substr_from('/GDO/')
     line = sl[1]
     "#{file} #{line}"
   end

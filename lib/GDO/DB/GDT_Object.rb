@@ -21,9 +21,9 @@ module GDO::DB
     
     def column_define
       
-      raise ::GDO::Core::Exception.new(t(:err_gdt_object_no_table, name)) if @table.nil?
+      raise ::GDO::Core::Exception.new(t(:err_gdt_object_no_table, _name)) if @table.nil?
       
-      pk = @table.primary_key
+      pk = @table.table.primary_key
       raise ::GDO::Core::Exception.new(t(:err_gdt_object_no_pk, @table.name)) if pk.nil?
 
       define = pk.column_define

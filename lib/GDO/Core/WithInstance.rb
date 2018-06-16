@@ -5,6 +5,12 @@
 module GDO::Core::WithInstance
   
   include ::GDO::Core::WithEvents
+  extend ::GDO::Core::WithEvents
+  
+  def self.included(base)
+    ::GDO::Core::Log.debug("GDO::Core::WithInstance::included for #{base}... extending...")
+    base.extend self
+  end
 
   def instance
     if class_variable_defined?('@@gdo_instance')
@@ -19,11 +25,7 @@ module GDO::Core::WithInstance
     class_variable_set('@@gdo_instance', instance)
     instance
   end
-  
-  # def reload
-    # load name.gsub('::', '/')
-  # end
-#   
+
   #
   # On a cache flush we remove all WithInstance instances
   # @see ::GDO::Core::WithEvents

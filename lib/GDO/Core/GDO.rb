@@ -52,7 +52,7 @@ module GDO::Core
     def self.quoteIdentifier(identifier); "`#{self.escapeIdentifier(identifier)}`"; end
     def self.escapeSearch(searchString); self.escape(searchString).gsub('%', '\\%'); end
     def self.escape(var); var.gsub("'", "\\'").gsub('"', '\\"'); end
-    def self.quote(var);
+    def self.quote(var)
       return "'#{self.escape(var)}'" if var.is_a?(String)
       return "NULL" if var.nil?
       return var if var.is_a?(Numeric)
@@ -250,11 +250,16 @@ module GDO::Core
     #################
     ### Selection ###
     #################
+    def find!(id)
+      find(id) or raise ::GDO::Core::Exception.new(t(:err_row_not_found))
+    end
+
     def find(id)
       get_by_id(id)
     end
 
     def get_by_id(id)
+      id = id.to_s
       if (!@cache) || (!(gdo = @cache.find_cached(id)))
         i = 0
         query = select
@@ -264,7 +269,7 @@ module GDO::Core
           i += 1
         }
         gdo = query.first.execute.fetch_object
-        gdo.recache
+        gdo.recache unless gdo.nil?
       end
       gdo
     end
@@ -301,7 +306,7 @@ module GDO::Core
     def persisted?; @persisted; end
 
     def set_var(name, var, mark_dirty=true)
-      @gdo_vars[name.to_s] = var.to_s
+      @gdo_vars[name.to_s] = var.to_s.empty? ? nil : var.to_s
       mark_dirty ? set_dirty(name) : self
     end
 

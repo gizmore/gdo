@@ -1,7 +1,4 @@
 require "bundler/setup"
-require "GDO"
-
-
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
