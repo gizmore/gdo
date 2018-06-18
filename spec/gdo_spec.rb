@@ -178,8 +178,9 @@ module GDO
       ::GDO::User::GDO_User.blank(
         user_name: "gizmore",
         user_password: ::GDO::Crypto::GDT_PasswordHash.hash('11111111'),
-        
+        user_email: ENV['GDO_BOT_MAIL'],
       ).insert
+      expect(::GDO::User::GDO_User.table.find_by_name(:gizmore)).to be_truthy
     end
 
   end

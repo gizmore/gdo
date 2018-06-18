@@ -49,5 +49,22 @@ class GDO::User::GDO_User < GDO::Core::GDO
     login = quote(login)
     table.select.where("user_name=#{login} OR user_email=#{login}").first.execute.fetch_object
   end
+  
+  def find_by_name(user_name)
+    table.select.where("user_name=#{quote(user_name)}").first.execute.fetch_object
+  end
+  
+  ##################
+  ### Permission ###
+  ##################
+  def load_permissions
+    ::GDO::User::GDO_UserPermission.table.select('perm_name').join_object(:up_permission).where("up_user=#{get_id}").execute
+  end
+  def user_permissions
+    @permissions ||= load_permissions
+  end
+  def has_permission?(permission_name)
+    
+  end
 
 end

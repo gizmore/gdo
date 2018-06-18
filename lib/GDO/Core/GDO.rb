@@ -51,9 +51,9 @@ module GDO::Core
     def self.escapeIdentifier(identifier); identifier.to_s.gsub("`", "\\`"); end
     def self.quoteIdentifier(identifier); "`#{self.escapeIdentifier(identifier)}`"; end
     def self.escapeSearch(searchString); self.escape(searchString).gsub('%', '\\%'); end
-    def self.escape(var); var.gsub("'", "\\'").gsub('"', '\\"'); end
+    def self.escape(var); var.to_s.gsub("'", "\\'").gsub('"', '\\"'); end
     def self.quote(var)
-      return "'#{self.escape(var)}'" if var.is_a?(String)
+      return "'#{self.escape(var)}'" if var.is_a?(String) or var.is_a?(Symbol)
       return "NULL" if var.nil?
       return var if var.is_a?(Numeric)
       return '1' if var == true

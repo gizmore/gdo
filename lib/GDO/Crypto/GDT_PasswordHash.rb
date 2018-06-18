@@ -27,4 +27,9 @@ class GDO::Crypto::GDT_PasswordHash < GDO::DB::GDT_String
     BCrypt::Password.create(password)
   end
   
+  def validate_password(plaintext)
+    return BCrypt::Password.new(_var) == plaintext
+  end
+
+  
 end

@@ -22,7 +22,13 @@ module GDO::Method
     end
     
     def execute_method
-      execute
+      begin
+        execute
+      rescue => e
+        ::GDO::Method::GDT_Response.make_with(
+          ::GDO::UI::GDT_Error.make_with_exception(e),
+        ).code(500)
+      end
     end
     
     def execute

@@ -19,6 +19,8 @@ module GDO::User
     def tables
       [
         ::GDO::User::GDO_User,
+        ::GDO::User::GDO_Permission,
+        ::GDO::User::GDO_UserPermission,
         ::GDO::User::GDO_Session,
       ]
     end
