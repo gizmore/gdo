@@ -37,5 +37,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "bcrypt", "~> 3.1"
   spec.add_dependency "mysql2", "~> 0.5"
+  spec.add_dependency "mail", "~> 2.7"
 #  spec.add_dependency "memcached", "~> 1.8"
 end
