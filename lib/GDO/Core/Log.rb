@@ -40,6 +40,7 @@ class GDO::Core::Log
   ####################
   def self.exception(exception)
     trace = exception.backtrace || []
+    trace.shift unless trace.empty?
     critical(exception.message + "\n" + trace.join("\n"))
   end
   def self.critical(message)

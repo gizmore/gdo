@@ -20,9 +20,9 @@ class GDO::User::GDO_User < GDO::Core::GDO
   ###############
   ### Current ###
   ###############
-  @@current ||= nil  
-  def self.current; @@current=(user); end
-  def self.current=(user); @@current = user; end
+  # @return [GDO::User::GDO_User]
+  def self.current; Thread.current[:gdo_user] || ghost; end
+  def self.current=(user); Thread.current[:gdo_user] = user; end
     
   ###########
   ### GDO ###
@@ -40,6 +40,10 @@ class GDO::User::GDO_User < GDO::Core::GDO
       ::GDO::Date::GDT_CreatedAt.make(:user_created_at)
     ]
   end
+  
+  def display_name
+    html(get_var(:user_display_name)||get_var(:user_name))
+  end
 
   ##############
   ### Helper ###
@@ -53,6 +57,17 @@ class GDO::User::GDO_User < GDO::Core::GDO
   def find_by_name(user_name)
     table.select.where("user_name=#{quote(user_name)}").first.execute.fetch_object
   end
+  
+  #############
+  ### Guest ###
+  #############
+  # @return [self]
+  def self.ghost
+    @@ghost ||= blank(
+      user_type: ::GDO::User::GDT_UserType::GHOST,
+      user_display_name: "~~~#{t(:ghost)}~~~",
+    )
+  end  
   
   ##################
   ### Permission ###

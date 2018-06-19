@@ -55,12 +55,6 @@ require "GDO/Core/StringUtil"
 # Monkeypatch basic helpers
 class Object
 
-  # I18n
-  def t(key, *args); ::GDO::Lang::Trans.instance.translate(key, *args); end
-  def tiso(iso, key, *args); ::GDO::Lang::Trans.instance.translate_iso(iso, key, *args); end
-  
-  def tt(time, format=:short); '13:37'; end
-
   # Module
   def gdo_module(name); ::GDO::Core::ModuleLoader.instance.get_module(name); end
   

@@ -20,5 +20,7 @@ module GDO::Method
     def _code; @code; end 
     def code(code); @code = code; self; end
     
+    def _exception; _fields[0]._exception; end
+    
   end
 end
