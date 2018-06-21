@@ -5,7 +5,7 @@ class GDO::Method::Base
   
   include ::GDO::Core::WithEvents
   extend ::GDO::Core::WithInstance
-  include ::GDO::Core::WithName
+  # include ::GDO::Core::WithName
   
   def parameters; []; end
   def permission; end
@@ -53,7 +53,7 @@ class GDO::Method::Base
   #
   def response_success(text)
     ::GDO::Method::GDT_Response.make_with(
-      ::GDO::UI::GDT_Success.make.text(text),
+      ::GDO::UI::GDT_Success.new.text(text),
     )
   end
   

@@ -8,7 +8,7 @@ module GDO::Core::Method
     end
     
     def execute
-      response_with(::GDO::Date::GDT_Datetime.make.value(Time.now))
+      response_with(::GDO::Date::GDT_Datetime.new.value(Time.now))
     end
   end
 end

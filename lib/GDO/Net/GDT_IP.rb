@@ -15,7 +15,7 @@ class GDO::Net::GDT_IP < GDO::DB::GDT_String
   ###########
   ### GDT ###
   ###########
-  def initialize
+  def initialize(name=nil)
     super
     min(3)
     max(39)

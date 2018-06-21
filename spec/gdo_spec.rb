@@ -17,8 +17,8 @@ module GDO
     # DB Columns
     def fields
       [
-          GDO::DB::GDT_Name.make(:skv_key).primary.not_null,
-          GDO::DB::GDT_String.make(:skv_value)
+          GDO::DB::GDT_Name.new(:skv_key).primary.not_null,
+          GDO::DB::GDT_String.new(:skv_value)
       ]
     end
   end
@@ -44,7 +44,7 @@ module GDO
       # Module config vars
       def module_config
         [
-          ::GDO::DB::GDT_String.make('test_setting').initial('stubby')
+          ::GDO::DB::GDT_String.new('test_setting').initial('stubby')
         ]
       end
       
@@ -72,9 +72,9 @@ module GDO
     end
 
     it "names GDT correctly, also automatically" do
-      expect(GDO::DB::GDT_String.make._name).to eq("gdo1")
-      expect(GDO::DB::GDT_String.make._name).to eq("gdo2")
-      expect(GDO::DB::GDT_String.make('test')._name).to eq("test")
+      expect(GDO::DB::GDT_String.new._name).to eq("gdo1")
+      expect(GDO::DB::GDT_String.new._name).to eq("gdo2")
+      expect(GDO::DB::GDT_String.new('test')._name).to eq("test")
     end
 
     it "can and cannot connect to the database" do

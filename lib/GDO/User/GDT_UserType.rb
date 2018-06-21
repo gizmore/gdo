@@ -22,7 +22,7 @@ module GDO::User
     GUEST  ||= 'guest'
     MEMBER ||= 'member'
     
-    def initialize
+    def initialize(name=nil)
       super
       enum_values(GHOST, BOT, GUEST, MEMBER)
     end

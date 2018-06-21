@@ -2,7 +2,7 @@ module GDO::Date
   class GDT_CreatedAt < GDT_Timestamp
     
     # Not null by default
-    def initialize
+    def initialize(name=nil)
       super
       not_null
     end

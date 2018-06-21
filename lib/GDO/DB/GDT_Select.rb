@@ -1,7 +1,7 @@
 module GDO::DB
   class GDT_Select < ::GDO::Core::GDT
     
-    def initialize
+    def initialize(name=nil)
       super
       @multiple = false
       @choices = {}

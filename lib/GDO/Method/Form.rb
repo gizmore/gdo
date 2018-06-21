@@ -22,7 +22,7 @@ module GDO::Method
       # cached
       return @form unless @form.nil?
       # make
-      @form = ::GDO::Form::GDT_Form.make
+      @form = ::GDO::Form::GDT_Form.new
       form(@form)
       # Call form hook
       publish("gdo_form_#{module_name.downcase}_#{method_name.downcase}", @form)

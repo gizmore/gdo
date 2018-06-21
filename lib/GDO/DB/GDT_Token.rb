@@ -1,7 +1,7 @@
 module GDO::DB
   class GDT_Token < ::GDO::DB::GDT_String
 
-    def initialize
+    def initialize(name=nil)
       super
       @min = @max = 8
       @encoding = ASCII

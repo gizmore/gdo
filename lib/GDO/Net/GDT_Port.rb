@@ -1,7 +1,7 @@
 module GDO::Net
   class GDT_Port < ::GDO::DB::GDT_UInt
 
-    def initialize
+    def initialize(name=nil)
       super
       min(1)
       max(65535)

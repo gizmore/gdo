@@ -12,7 +12,7 @@ module GDO::Method
     ###########
     ### GDT ###
     ###########
-    def initialize
+    def initialize(name=nil)
       super
       @code = 200
     end

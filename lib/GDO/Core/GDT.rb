@@ -8,15 +8,20 @@
 #
 class GDO::Core::GDT
 
-  include ::GDO::Core::WithName
+#  include ::GDO::Core::WithName
   
   # Statistics
   def self.allocated; @@allocated; end
+  
+  
 
-  def initialize
+  def initialize(name=nil)
     @initial = nil
     @var = nil
     @val = nil
+    
+    @name = name||default_name
+    # @label = default_label
 
     @not_null = false
     @unique = false
@@ -41,6 +46,14 @@ class GDO::Core::GDT
   ###########
   def _gdo; @gdo; end
   def gdo(gdo); @gdo = gdo; vars(gdo.get_vars); end
+  
+  def _name; @name; end
+  def name(name); @name = name; self; end
+  def default_name; @@name ||= 0; @@name += 1; "gdo#{@@name}"; end
+
+  def _label; @label; end
+  def label(label); @label = label; self; end
+  # def default_label; nil; end
 
   def _not_null; @not_null; end
   def not_null; @not_null = true; self; end

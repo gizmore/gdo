@@ -47,13 +47,13 @@ module GDO::Core
 
     def fields
       [
-        ::GDO::DB::GDT_AutoInc.make('module_id'),
-        ::GDO::DB::GDT_Name.make('module_name').not_null.case_s,
-        ::GDO::DB::GDT_Version.make('module_version').not_null.initial('1.00'),
-        ::GDO::DB::GDT_Boolean.make('module_enabled').not_null.initial('1'),
+        ::GDO::DB::GDT_AutoInc.new('module_id'),
+        ::GDO::DB::GDT_Name.new('module_name').not_null.case_s,
+        ::GDO::DB::GDT_Version.new('module_version').not_null.initial('1.00'),
+        ::GDO::DB::GDT_Boolean.new('module_enabled').not_null.initial('1'),
         # Timestamps
-        ::GDO::Date::GDT_EditedAt.make('module_updated'),
-        ::GDO::Date::GDT_CreatedAt.make('module_created'),
+        ::GDO::Date::GDT_EditedAt.new('module_updated'),
+        ::GDO::Date::GDT_CreatedAt.new('module_created'),
       ]
     end
 

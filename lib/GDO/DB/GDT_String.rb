@@ -1,7 +1,7 @@
 module GDO::DB
   class GDT_String < ::GDO::Core::GDT
 
-    def initialize
+    def initialize(name=nil)
       super
       @min = nil
       @max = 255

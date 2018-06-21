@@ -6,7 +6,7 @@ module GDO::DB
   # 
   class GDT_Enum < GDT_Select
     
-    def initialize
+    def initialize(name=nil)
       super
       @multiple = false
       @enum_values = []

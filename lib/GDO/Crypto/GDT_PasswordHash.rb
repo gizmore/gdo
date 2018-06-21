@@ -10,7 +10,7 @@ class GDO::Crypto::GDT_PasswordHash < GDO::DB::GDT_String
   
   def self.default_label; t(:password); end
   
-  def initialize
+  def initialize(name=nil)
     super
     min(59)
     max(60)

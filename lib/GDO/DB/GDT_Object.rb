@@ -1,7 +1,7 @@
 module GDO::DB
   class GDT_Object < ::GDO::DB::GDT_UInt
     
-    def initialize
+    def initialize(make=nil)
       super
       @cascade = "CASCADE"
       @table = nil

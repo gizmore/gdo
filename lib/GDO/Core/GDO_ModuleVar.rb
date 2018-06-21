@@ -3,9 +3,9 @@ module GDO::Core
     
     def fields
       [
-      ::GDO::Core::GDT_Module.make('mv_module').primary.not_null,
-      ::GDO::DB::GDT_String.make('mv_key').primary.not_null,
-      ::GDO::DB::GDT_String.make('mv_value'),
+      ::GDO::Core::GDT_Module.new('mv_module').primary.not_null,
+      ::GDO::DB::GDT_String.new('mv_key').primary.not_null,
+      ::GDO::DB::GDT_String.new('mv_value'),
       ]
     end
 

@@ -20,6 +20,7 @@ module GDO
           raise ::GDO::Core::Exception.new(t(:err_missing_const, self.name, const_name, path))
         end
       rescue LoadError => e
+        puts e.backtrace
         ::GDO::Core::Log.error(t(:err_gdo_autoload, name, const_name, path))
         nil
       end
@@ -72,7 +73,7 @@ class Object
       begin
         path = name.gsub('::','/')+".rb"
         load(path)
-        ::GDO::Core::Log.debug("Reloaded GDO module #{name} from #{path}")
+        # ::GDO::Core::Log.debug("Reloaded GDO module #{name} from #{path}")
       rescue LoadError => e
       end
     end
@@ -94,3 +95,4 @@ end
 #########################
 require "GDO/Core/Module"
 require "GDO/User/Module"
+require "GDO/Mail/Module"

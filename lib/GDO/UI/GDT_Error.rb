@@ -11,7 +11,7 @@ class GDO::UI::GDT_Error < GDO::UI::GDT_Label
   def self.make_with_exception(exception, log=true)
     ::GDO::Core::Log.exception(exception) if log
 
-    instance = make
+    instance = new
     instance.exception(exception)
     
     trace = exception.backtrace

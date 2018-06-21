@@ -10,7 +10,7 @@ module GDO::DB
       "#{before},#{@digits_after}"
     end
     
-    def initialize()
+    def initialize(name=nil)
       super
       @digits_before = @digits_after = nil
     end

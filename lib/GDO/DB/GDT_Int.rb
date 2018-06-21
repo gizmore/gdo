@@ -23,7 +23,7 @@ module GDO::DB
     ###########
     ### GDT ###
     ###########
-    def initialize
+    def initialize(name=nil)
       super
       @bytes = 4
       @min = @max = nil

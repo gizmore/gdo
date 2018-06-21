@@ -3,7 +3,7 @@ module GDO::Net
   #
   class GDT_Url < ::GDO::DB::GDT_String
     
-    def initialize
+    def initialize(name=nil)
       super
       case_s
     end

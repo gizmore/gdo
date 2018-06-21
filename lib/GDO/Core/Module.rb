@@ -17,7 +17,7 @@ module GDO::Core
     
     def module_config
       [
-          GDT_Theme.make('theme').initial('default'),
+          GDT_Theme.new('theme').initial('default'),
       ]
     end
 

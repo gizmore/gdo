@@ -15,10 +15,6 @@
 #
 class GDO::Form::GDT_CSRF < GDO::Core::GDT
   
-  def initialize
-    super
-  end
-  
   def validate(value)
     true # TODO: Re-Implement from GDO6
   end

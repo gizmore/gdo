@@ -1,7 +1,7 @@
 module GDO::DB
   class GDT_AutoInc < GDO::DB::GDT_Int
     
-    def initialize
+    def initialize(name=nil)
       super
       unsigned
     end

@@ -1,9 +1,9 @@
 module GDO::DB
   class GDT_UInt < ::GDO::DB::GDT_Int
     
-    def initialize
+    def initialize(name=nil)
       super
-      @unsigned = true
+      unsigned
     end
 
   end

@@ -1,21 +1,68 @@
+#
+#
+# Global application helper?
+#
+#
+require "rack"
+require "rack/utils"
+require "rack/query_parser"
+
 class GDO::Core::Application
   
-  extend ::GDO::Core::WithEvents
-
+  include GDO::Core::WithEvents
+  include GDO::Core::WithInstance
+  
   def self.init
+    instance
   end
-
 
   def initialize
   end
   
+  def _default_module; @default_module||ENV['GDO_DEFAULT_MODULE']||'Core'; end
+  def default_module(mod); @default_module = mod; self; end
+  
+  
   #############
   ### HTTPD ###
   #############
-  def self.call(env)
-    byebug
-    [200, {}, 'Hello World'+env.inspect]
+  def self.call(env); instance.call(env); end
+  def call(env)
+    begin
+      puts env.inspect
+      return [200, {}, ''] if env['REQUEST_METHOD'] == 'HEAD'
+      parameters = parse_query_string(env['QUERY_STRING'])
+      mo = parameters["mo"]||_default_module
+      me = parameters["me"]||'Index'
+      method = gdo_module(mo).gdo_method(me)
+      
+      puts parameters.inspect
+#      mod = gdo_module(parameters)
+#      method = mod.gdo_method('Welcome')
+#      method.set_parameters(parameters)
+#      response
+      [200, {}, 'Hello World'+parameters.inspect]
+    rescue => ex
+      GDO::Core::Log.exception(ex)
+      response = GDO::Method::GDT_Response.make_with(
+        GDO::UI::GDT_Error.make_with_exception(ex)
+      )
+      page = GDO::UI::GDT_WebPage.instance
+      page.response(response)
+      [response._code, {}, page.render]
+    end
   end
+    
+
+  def parse_query_string(string)
+    return {} unless string
+    params = Rack::QueryParser::Params
+    parser = Rack::QueryParser.new(params, 10, 10)
+    parser.parse_query(string)
+  end
+  #
+  # Called by passenger/rack
+  #
   
   #############
   ### Cache ###
