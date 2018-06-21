@@ -29,19 +29,22 @@ class GDO::Core::Application
   def self.call(env); instance.call(env); end
   def call(env)
     begin
+
       puts env.inspect
       return [200, {}, ''] if env['REQUEST_METHOD'] == 'HEAD'
+
       parameters = parse_query_string(env['QUERY_STRING'])
+      puts parameters.inspect
+
       mo = parameters["mo"]||_default_module
       me = parameters["me"]||'Index'
       method = gdo_module(mo).gdo_method(me)
-      
-      puts parameters.inspect
-#      mod = gdo_module(parameters)
-#      method = mod.gdo_method('Welcome')
-#      method.set_parameters(parameters)
-#      response
-      [200, {}, 'Hello World'+parameters.inspect]
+
+      method.set_parameters(parameters)
+      response = method.execute_method
+
+      [200, {}, response.render]
+
     rescue => ex
       GDO::Core::Log.exception(ex)
       response = GDO::Method::GDT_Response.make_with(

@@ -4,6 +4,11 @@ Versioning:
 
 - Restarting with gdo-ruby at 1.00. Usually it would be v7
 
+Filenames:
+
+- @havenwood mentioned that CamelCase filenames are unconventional in ruby. GDO, by design, violates this unwritten for it's autoloader and this won't change.
+
+
 GDT:
 
 - setters return self for chaining

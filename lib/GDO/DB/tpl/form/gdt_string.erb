@@ -1,0 +1,13 @@
+<div class="gdo-container<%=field.html_error_class%>">
+	<label for="gdo-<%=html(field._name)%>"><%=html(field._label)%>></label>
+	<input
+	 id="gdo-<%=html(field._name)%>"
+	 name="<%=html(field._name)%>"
+<% if field._pattern %>
+     pattern="<%=field._pattern%>"
+<% end %>
+	 type="text" />
+<% if field.has_error? %>
+	<div class="gdo-field-error"><%=html(field._error)%></div>
+<% end %>
+</div>

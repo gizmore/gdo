@@ -16,6 +16,13 @@ module GDO::DB
     def _choices; @choices; end
     def choices(choices); @choices = choices; self; end
     def init_choices; choices({}); end
+    
+    def to_value(var)
+      var.split(',')
+    end
+    def to_var(value)
+      value.join(',')
+    end
 
     ##############
     ### Render ###

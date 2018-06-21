@@ -100,7 +100,12 @@ module GDO
     end
 
     it "has a working template engine" do
+      # Basic
       expect(::GDO::Core::GDT_Template._erb("This is a <%=x%>", :x => 'Test')).to eq("This is a Test")
+      # Try GDT_String form rendering
+      html = ::GDO::DB::GDT_String.new.render_form
+      expect(html.index('container')).to be_truthy
+      expect(html.index('input')).to be_truthy
     end
 
     it "can create and drop gdo tables" do

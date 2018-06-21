@@ -56,10 +56,10 @@ require "GDO/Core/StringUtil"
 class Object
 
   # Module
-  def gdo_module(name); ::GDO::Core::ModuleLoader.instance.get_module(name); end
+  def gdo_module(name); ::GDO::Core::ModuleLoader.instance.get_module(name) or raise ::GDO::Core::Exception(t(:err_unknown_module)); end
   
   # HTML
-  def html(string); string.gsub('<', '&lt;').gsub('>', '&gt;').gsub('"', '&quot;'); end
+  def html(string); return nil if string.nil?; string.gsub('<', '&lt;').gsub('>', '&gt;').gsub('"', '&quot;'); end
   
   # MySQL
   def escape(string); ::GDO::Core::GDO.escape(string); end
@@ -93,5 +93,8 @@ end
 ### Load Core modules ###
 #########################
 require "GDO/Core/Module"
+require "GDO/DB/Module"
 require "GDO/User/Module"
 require "GDO/Mail/Module"
+# require "GDO/Net/Module"
+require "GDO/UI/Module"

@@ -84,7 +84,7 @@ module GDO::Core
     ### Theme ###
     #############
     def self.provides_theme(theme)
-      ::GDO::Core::GDT_Theme.designs[theme] = _path
+      ::GDO::Core::GDT_Theme.designs[theme.to_s] = instance._path
     end
     
     ################
@@ -98,10 +98,12 @@ module GDO::Core
     ###############
     ### Methods ###
     ###############
+    #
+    # @return [GDO::Method::Base]
+    #
     def gdo_method(method_name)
-      const_name = "::GDO::#{self.module_name}::Method::#{method_name}"
-      const = Object.const_get(const_name)
-      raise ::GDO::Core::Exception.new(t(:err_unknown_method, module_name, method_name)) if const.nil?
+      const_name = "Method::#{method_name}"
+      const = self.class.const_get(const_name) or raise ::GDO::Core::Exception.new(t(:err_unknown_method, module_name, method_name))
       const.instance
     end
     
