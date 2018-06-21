@@ -70,6 +70,11 @@ module GDO
     it "has a version number" do
       expect(GDO::VERSION).not_to be nil
     end
+    
+    it "has a working autoloader" do
+      expect(::GDO::Net::GDT_Url).to be_a(::Class)
+      expect{::GDO::Net::GDT_NOEXIST}.to raise_error(::GDO::Core::Exception)
+    end
 
     it "names GDT correctly, also automatically" do
       expect(GDO::DB::GDT_String.new._name).to eq("gdo1")

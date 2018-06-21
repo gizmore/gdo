@@ -11,19 +11,18 @@ module GDO
   module Autoloader
     # Simply include missing constants as is in the file system. e.g.: GDO::Net::GDT_URL  => require "GDO/Net/GDT_URL"
     def const_missing(const_name)
-      begin
-        path = name.gsub('::', '/') + "/#{const_name}"
-        require path
-        if self.const_defined?(const_name)
-          Object.const_get("#{name}::#{const_name}")
-        else
-          raise ::GDO::Core::Exception.new(t(:err_missing_const, self.name, const_name, path))
-        end
-      rescue LoadError => e
-        ::GDO::Core::Log.error(t(:err_gdo_autoload, name, const_name, path))
-        ::GDO::Core::Log.exception(e)
-        nil
+      path = name.gsub('::', '/') + "/#{const_name}"
+      require path
+      if self.const_defined?(const_name)
+        Object.const_get("#{name}::#{const_name}")
+      else
+        raise ::GDO::Core::Exception.new(t(:err_missing_const, self.name, const_name, path))
       end
+      rescue LoadError => e
+      ::GDO::Core::Log.error(t(:err_gdo_autoload, name, const_name, path))
+      ::GDO::Core::Log.exception(e)
+      raise ::GDO::Core::Exception.new(t(:err_autoload_missing_file, path))
+      nil
     end
   end
   extend Autoloader # apply to module GDO
