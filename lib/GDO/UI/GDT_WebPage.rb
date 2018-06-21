@@ -14,7 +14,7 @@ class GDO::UI::GDT_WebPage < GDO::UI::GDT_Container
     @javascripts = []
   end
   
-  def _title; @title; end
+  def _title; @title ||= ''; end
   def title(title); @title = title; self; end
   
   def _keywords; @keywords; end
@@ -27,12 +27,9 @@ class GDO::UI::GDT_WebPage < GDO::UI::GDT_Container
   def _response; @response; end
   def response(response); @response = response; self; end
   
-  def render
+  def render_html
     publish(:gdo_include_assets, self)
-    GDO::Core::GDT_Template.render_template('UI/tpl/gdt_webpage.erb',
-      page: self,
-      response: @response,
-    )
+    render_template('gdt_webpage.erb', page: self, response: @response)
   end
   
 end

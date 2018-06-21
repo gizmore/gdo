@@ -45,5 +45,11 @@ module GDO::Core::WithFields
       gdt.is_a?(klass)
     }
   end
+  
+  def render_html
+    html = ''
+    _fields.each{|gdt| _html = gdt.render_html; html += _html if _html }
+    html
+  end
 
 end

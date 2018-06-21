@@ -97,9 +97,9 @@ class GDO::Core::GDT
   ##############
   ### Render ###
   ##############
-  def render; @_var; end
+  def render; @var; end
   def render_form; raise ::GDO::Core::Exception.new(t(:err_cannot_render_form, self.class.name)); end
-  def render_html; html(@_var); end
+  def render_html; html(@var); end
   def render_json; { @name => render }; end
   def render_ws; end
   # Render helper

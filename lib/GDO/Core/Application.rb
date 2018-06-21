@@ -42,8 +42,9 @@ class GDO::Core::Application
 
       method.set_parameters(parameters)
       response = method.execute_method
-
-      [200, {}, response.render]
+      page = GDO::UI::GDT_WebPage.instance
+      page.response(response)
+      [response._code, response._headers, page.render_html]
 
     rescue => ex
       GDO::Core::Log.exception(ex)
@@ -52,7 +53,7 @@ class GDO::Core::Application
       )
       page = GDO::UI::GDT_WebPage.instance
       page.response(response)
-      [response._code, {}, page.render]
+      [response._code, response._headers, page.render_html]
     end
   end
     

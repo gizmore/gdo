@@ -188,6 +188,14 @@ module GDO
       ).insert
       expect(::GDO::User::GDO_User.table.find_by_name(:gizmore)).to be_truthy
     end
+    
+    it "does some basic checks on the rake integration" do
+      app = ::GDO::Core::Application.instance
+      ::GDO::Core::Application.call({
+        
+      })
+    end
+    
 
   end
 end
