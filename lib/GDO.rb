@@ -20,8 +20,8 @@ module GDO
           raise ::GDO::Core::Exception.new(t(:err_missing_const, self.name, const_name, path))
         end
       rescue LoadError => e
-        puts e.backtrace
         ::GDO::Core::Log.error(t(:err_gdo_autoload, name, const_name, path))
+        ::GDO::Core::Log.exception(e)
         nil
       end
     end
