@@ -88,13 +88,6 @@ module GDO
       expect(db.get_link).to be_truthy
     end
 
-    # Actually a db load fails and this sucks as it is rescue nil
-    # it "can load modules" do
-      # ::GDO::Core::ModuleLoader.init
-      # expect(::GDO::Core::Module.instance).to be_truthy
-      # expect(::GDO::Core::Module.instance).to be_a(::GDO::Core::Module)
-    # end
-
     it "can create gdo in memory" do
       kv = GDO::SPECSimpleKV.blank("skv_key" => 'version', "skv_value" => '1.0.0')
     end
@@ -102,10 +95,13 @@ module GDO
     it "has a working template engine" do
       # Basic
       expect(::GDO::Core::GDT_Template._erb("This is a <%=x%>", :x => 'Test')).to eq("This is a Test")
-      # Try GDT_String form rendering
-      html = ::GDO::DB::GDT_String.new.render_form
+      # Try some form rendering
+      form = ::GDO::Form::GDT_Form.new
+      form.add_field ::GDO::DB::GDT_String.new
+      html = form.render_html
       expect(html.index('container')).to be_truthy
-      expect(html.index('input')).to be_truthy
+      expect(html.index('<input')).to be_truthy
+      expect(html.index('<form')).to be_truthy
     end
 
     it "can create and drop gdo tables" do

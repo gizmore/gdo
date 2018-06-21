@@ -10,5 +10,7 @@
 class GDO::Form::GDT_Form <GDO::Core::GDT
 
   include ::GDO::Core::WithFields
+  
+  def render_html; render_template('form/gdt_form.erb'); end
 
 end

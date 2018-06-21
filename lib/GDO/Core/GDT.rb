@@ -34,6 +34,7 @@ class GDO::Core::GDT
   end
   
   def module_name; self.class.name.split('::')[1]; end
+  # def self.module_name; name.split('::')[1]; end
 
   ##########
   ### DB ###
@@ -96,14 +97,14 @@ class GDO::Core::GDT
   ##############
   ### Render ###
   ##############
-  def render; _val; end
+  def render; @_var; end
   def render_form; raise ::GDO::Core::Exception.new(t(:err_cannot_render_form, self.class.name)); end
-  def render_html; html(_val); end
+  def render_html; html(@_var); end
   def render_json; { @name => render }; end
   def render_ws; end
   # Render helper
   def render_template(path, args={})
-    args['field'] = self
+    args['field'] = self # field is default to self
     GDO::Core::GDT_Template.render_template(module_name, path, args)
   end
 

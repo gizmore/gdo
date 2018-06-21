@@ -94,6 +94,7 @@ end
 #########################
 require "GDO/Core/Module"
 require "GDO/DB/Module"
+require "GDO/Form/Module"
 require "GDO/User/Module"
 require "GDO/Mail/Module"
 # require "GDO/Net/Module"
