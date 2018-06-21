@@ -74,7 +74,7 @@ module GDO
     it "names GDT correctly, also automatically" do
       expect(GDO::DB::GDT_String.new._name).to eq("gdo1")
       expect(GDO::DB::GDT_String.new._name).to eq("gdo2")
-      expect(GDO::DB::GDT_String.new('test')._name).to eq("test")
+      expect(GDO::DB::GDT_String.new(:test)._name).to eq("test")
     end
 
     it "can and cannot connect to the database" do

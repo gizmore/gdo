@@ -4,7 +4,7 @@ module GDO::Method
     include ::GDO::Core::WithFields
     
     def self.make_with(*gdts)
-      instance = make
+      instance = new
       gdts.each{|gdt| instance.add_field(gdt) }
       instance
     end

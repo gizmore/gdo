@@ -31,9 +31,9 @@ class GDO::User::GDO_User < GDO::Core::GDO
     [
       ::GDO::DB::GDT_AutoInc.new(:user_id),
       ::GDO::User::GDT_UserType.new(:user_type).initial(::GDO::User::GDT_UserType::MEMBER),
+      ::GDO::User::GDT_Username.new(:user_name).unique, # It has a unique login name
       ::GDO::Mail::GDT_Email.new(:user_email).unique,
       ::GDO::Crypto::GDT_PasswordHash.new(:user_password),
-      ::GDO::User::GDT_Username.new(:user_name).unique, # It has a unique login name
       ::GDO::User::GDT_Username.new(:user_guest_name), # it can have a guest name for guests
       ::GDO::DB::GDT_String.new(:user_real_name), # it can have a real name as well
       ::GDO::DB::GDT_String.new(:user_display_name), # is set to display name for search etc

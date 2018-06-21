@@ -8,7 +8,7 @@ require 'bcrypt'
 #
 class GDO::Crypto::GDT_PasswordHash < GDO::DB::GDT_String
   
-  def self.default_label; t(:password); end
+  def default_label; t(:password); end
   
   def initialize(name=nil)
     super
@@ -28,8 +28,8 @@ class GDO::Crypto::GDT_PasswordHash < GDO::DB::GDT_String
   end
   
   def validate_password(plaintext)
-    return BCrypt::Password.new(_var) == plaintext
+    return false unless old_hash = _var
+    return BCrypt::Password.new(old_hash) == plaintext
   end
 
-  
 end

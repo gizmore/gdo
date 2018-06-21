@@ -20,7 +20,7 @@ class GDO::Core::GDT
     @var = nil
     @val = nil
     
-    @name = name||default_name
+    @name = name == nil ? default_name : name.to_s
     # @label = default_label
 
     @not_null = false
