@@ -4,11 +4,12 @@
 class GDO::Method::Base < GDO::Core::GDT
   
   include ::GDO::Core::WithEvents
-  extend ::GDO::Core::WithInstance
+  # extend ::GDO::Core::WithInstance
   # include ::GDO::Core::WithName
   
   def parameters; []; end
   def permission; end
+  def with_session?; true; end
   def user_type; end
   def module_name; self.class.name.split('::')[-3]; end
   def gdo_module; get_module(module_name); end
@@ -17,8 +18,8 @@ class GDO::Method::Base < GDO::Core::GDT
   def _request; @request ||= ::GDO::Core::Application.request; end
   def request(request); @request = request; self; end
   
-  def _response; @response ||=::GDO::Core::Application.new_response; end
-  def response(response); @response = response; self; end
+  def _response; ::GDO::Core::Application.response; end
+  # def response(response); @response = response; self; end
   
   def initialize
     @parameters = parameters
@@ -39,7 +40,7 @@ class GDO::Method::Base < GDO::Core::GDT
   # You override only "execute".
   #
   def execute_method
-#    session_start
+    session_start if with_session?
     execute
     _response
     rescue GDO::Core::Exception => e
@@ -74,9 +75,9 @@ class GDO::Method::Base < GDO::Core::GDT
     self
   end
   
-  # def session_start(cookie)
-    # ::GDO::User::GDO_Session.start(cookie, _response)
-  # end
+  def session_start
+    ::GDO::User::GDO_Session.start
+  end
   
   # def response_with(*gdts)
     # ::GDO::Method::GDT_Response.make_with(*gdts)

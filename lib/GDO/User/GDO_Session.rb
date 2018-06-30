@@ -1,13 +1,19 @@
 #
-# Session table
+# Session table.
+# Uses rack cookies via ::GDO::Core::Application if no cookie is specified.
+#
+# @example
+# session = ::GDO::User::GDO_Session.start
+# session.set('key', 'value)
 #
 # @version 1.00
 # @since 1.00
-# @author gizmore@wechall.net
 # @license MIT
+# @author gizmore@wechall.net
 #
-# @see GDT_Serialize
-# @see GDO_User
+# @see GDO::Core::Application
+# @see GDO::DB::GDT_Serialize
+# @see GDO::User::GDO_User
 #
 class GDO::User::GDO_Session < GDO::Core::GDO
   
@@ -91,7 +97,6 @@ class GDO::User::GDO_Session < GDO::Core::GDO
   private
   
   def self.new_session
-    byebug
     instance = new_instance
     instance.save
     ::GDO::Core::Application.set_cookie(COOKIE_NAME, instance.cookie_data)
@@ -100,9 +105,7 @@ class GDO::User::GDO_Session < GDO::Core::GDO
   
   def self.load_session(cookie)
     id, token = cookie.split('-')
-    byebug
     instance = table.find(id)
-    byebug
     return new_session if instance.nil? || (instance.get_token != token)
     instance
   end

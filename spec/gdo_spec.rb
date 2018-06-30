@@ -212,12 +212,12 @@ module GDO
     end
     
     it "can do session magic" do
-      # Request 1
+      # Request 1 - expect initial magic cookie to be set
       ::GDO::Core::Application.new_request({})
       session = ::GDO::User::GDO_Session.start
       cookie = ::GDO::Core::Application.cookie(::GDO::User::GDO_Session::COOKIE_NAME)
       expect(cookie).to eq(::GDO::User::GDO_Session::MAGIC_VALUE)
-      # Request 2
+      # Request 2 - resend initial magic cookie and set a session var
       ::GDO::Core::Application.new_request({'COOKIE' => cookie})
       session = ::GDO::User::GDO_Session.start(cookie)
       session.set(:stubby, :flubby)
@@ -225,7 +225,7 @@ module GDO
       expect(cookie != ::GDO::User::GDO_Session::MAGIC_VALUE).to be_truthy
       expect(cookie).to be_truthy
       expect(session.persisted?).to be_truthy
-      # Request 3
+      # Request 3 - reload session and check var
       ::GDO::Core::Application.new_request({'COOKIE' => cookie})
       session = ::GDO::User::GDO_Session.start(cookie)
       expect(session.get(:stubby)).to eq(:flubby)
@@ -239,8 +239,12 @@ module GDO
       code, headers, response = app.call({})
       expect(code).to eq(200)
       expect(response.index('outer')).to be_truthy
+      # Try the Core::Method::Time
+      code, headers, response = app.call("QUERY_STRING" => "mo=Core&me=Time")
+      expect(code).to eq(200)
+      expect(response.index('outer')).to be_truthy
+      expect(response.index(Time.new.year.to_s)).to be_truthy
     end
-    
 
   end
 end

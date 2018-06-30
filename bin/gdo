@@ -9,7 +9,7 @@ module_name = ARGV[0]
 method_name = ARGV[1]
 
 ENV["GDO_ENV"] ||= "dev"
-ENV["GDO_LOG_LEVEL"] ||= "4"
+ENV["GDO_LOG_LEVEL"] ||= "6"
 ENV["GDO_LOG_PATH"] ||= "~/.gdo/logs/"
 
 ENV["GDO_DB_HOST"] ||= "localhost"
