@@ -1,7 +1,7 @@
 #
 #
 #
-class GDO::Method::Base
+class GDO::Method::Base < GDO::Core::GDT
   
   include ::GDO::Core::WithEvents
   extend ::GDO::Core::WithInstance
@@ -9,9 +9,16 @@ class GDO::Method::Base
   
   def parameters; []; end
   def permission; end
+  def user_type; end
   def module_name; self.class.name.split('::')[-3]; end
   def gdo_module; get_module(module_name); end
   def method_name; self.class.name.split('::')[-1]; end
+  
+  def _request; @request ||= ::GDO::Core::Application.request; end
+  def request(request); @request = request; self; end
+  
+  def _response; @response ||=::GDO::Core::Application.new_response; end
+  def response(response); @response = response; self; end
   
   def initialize
     @parameters = parameters
@@ -23,25 +30,26 @@ class GDO::Method::Base
     raise ::GDO::Core::Exception.new(t(:err_unknown_method_parameter, name, field))
   end
   
+  def render_template(path, vars={})
+    GDO::Core::GDT_Template.render_template(module_name, path, vars)
+  end
+  
   #
   # Wrapping execution here.
   # You override only "execute".
   #
   def execute_method
-    begin
-      execute
-
-    # Own exceptions have a code
+#    session_start
+    execute
+    _response
     rescue GDO::Core::Exception => e
-      ::GDO::Method::GDT_Response.make_with(
-        ::GDO::UI::GDT_Error.make_with_exception(e),
-      ).code(e.code)
-    # Ruby exceptions are 500
+      # Own exceptions have a code
+      _response.add_field ::GDO::UI::GDT_Error.make_with_exception(e)
+      _response.code(e.code)
     rescue => e
-      ::GDO::Method::GDT_Response.make_with(
-        ::GDO::UI::GDT_Error.make_with_exception(e),
-      ).code(500)
-    end
+      # Ruby exceptions are 500
+      _response.add_field ::GDO::UI::GDT_Error.make_with_exception(e)
+      _response.code(500)
   end
   
   def execute
@@ -51,11 +59,11 @@ class GDO::Method::Base
   #
   # A response with a success message
   #
-  def response_success(text)
-    ::GDO::Method::GDT_Response.make_with(
-      ::GDO::UI::GDT_Success.new.text(text),
-    )
-  end
+  # def response_success(text)
+    # ::GDO::Method::GDT_Response.make_with(
+      # ::GDO::UI::GDT_Success.new.text(text),
+    # )
+  # end
   
   #
   # Set gdt#@vars
@@ -66,8 +74,12 @@ class GDO::Method::Base
     self
   end
   
-  def response_with(*gdts)
-    ::GDO::Method::GDT_Response.make_with(*gdts)
-  end
+  # def session_start(cookie)
+    # ::GDO::User::GDO_Session.start(cookie, _response)
+  # end
+  
+  # def response_with(*gdts)
+    # ::GDO::Method::GDT_Response.make_with(*gdts)
+  # end
   
 end

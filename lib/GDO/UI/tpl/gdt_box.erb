@@ -1,0 +1,8 @@
+<div <!--box-->
+ id="<%=field._name%>"
+ class="gdo-box gdo-box-<%=field.horizontal? ? 'horizontal' : 'vertical' %>"
+>
+<% field._fields.each do |gdt| %>
+<%=gdt.render_html%>
+<% end %>
+</div> <!--box-->

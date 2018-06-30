@@ -13,8 +13,8 @@ module GDO
     def const_missing(const_name)
       path = name.gsub('::', '/') + "/#{const_name}"
       require path
-      if self.const_defined?(const_name)
-        Object.const_get("#{name}::#{const_name}")
+      if self.const_defined?("#{const_name}")
+        self.const_get("#{const_name}")
       else
         raise ::GDO::Core::Exception.new(t(:err_missing_const, self.name, const_name, path))
       end

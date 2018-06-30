@@ -21,6 +21,9 @@ class GDO::Core::Application
   
   def _default_module; @default_module||ENV['GDO_DEFAULT_MODULE']||'Core'; end
   def default_module(mod); @default_module = mod; self; end
+
+  def _default_method; @default_method||ENV['GDO_DEFAULT_METHOD']||'Index'; end
+  def default_method(method); @default_method = method; self; end
   
   
   #############
@@ -29,32 +32,32 @@ class GDO::Core::Application
   def self.call(env); instance.call(env); end
   def call(env)
     begin
+      request = self.class.new_request(env)
+      return [200, {}, ''] if request.head?
 
-      puts env.inspect
-      return [200, {}, ''] if env['REQUEST_METHOD'] == 'HEAD'
-
-      parameters = parse_query_string(env['QUERY_STRING'])
-      puts parameters.inspect
-
-      mo = parameters["mo"]||_default_module
-      me = parameters["me"]||'Index'
+      mo = request.GET["mo"]||_default_module
+      me = request.GET["me"]||_default_method
+      
       method = gdo_module(mo).gdo_method(me)
-
-      method.set_parameters(parameters)
+      method.request(request)
+      method.set_parameters(request.GET)
+      method.set_parameters(request.POST) if request.post?
+      
       response = method.execute_method
-      page = GDO::UI::GDT_WebPage.instance
-      page.response(response)
-      [response._code, response._headers, page.render_html]
 
     rescue => ex
+      # TODO: own exceptions are 200? nah?
       GDO::Core::Log.exception(ex)
       response = GDO::Method::GDT_Response.make_with(
         GDO::UI::GDT_Error.make_with_exception(ex)
-      )
+      ).code(500)
       page = GDO::UI::GDT_WebPage.instance
       page.response(response)
       [response._code, response._headers, page.render_html]
     end
+
+    page = GDO::UI::GDT_WebPage.instance.response(response)
+    [response._code, response._headers, page.render_html]
   end
     
 
@@ -96,5 +99,41 @@ class GDO::Core::Application
     # Reload modules
     ::GDO::Core::ModuleLoader.init
   end
+  
+  #################
+  ### HTTP API? ###
+  #################
+  def self.new_request(env={})
+    Thread.current[:gdo_request] = nil
+    request
+  end
+  def self.request(env={})
+    Thread.current[:gdo_request] ||= ::Rack::Request.new(env)
+  end
+  def self.new_response
+    Thread.current[:gdo_response] = nil
+    response
+  end
+  def self.response
+    Thread.current[:gdo_response] ||= ::GDO::Method::GDT_Response.new
+  end
+  def self.cookie(key)
+    self.request.cookies[key]
+  end
+
+  def self.set_cookie(key, value, no_js=true, https_only=true, lifetime=0)
+    ::GDO::Core::Log.debug("Application.set_cookie(#{key}, #{value}, #{no_js}, #{https_only}, #{lifetime})")
+    response = self.response
+    cookie = response.header('Set-Cookie')
+    cookie ||= "";
+    cookie += "#{key}=#{value};"
+    cookie += "Path=/;"
+    cookie += "Secure;" if https_only
+    cookie += "MaxAge=#{lifetime};" if lifetime > 0
+    cookie += "HttpOnly;" if no_js
+    response.header('Set-Cookie', cookie)
+    request.cookies[key] = value
+  end
+    
 
 end

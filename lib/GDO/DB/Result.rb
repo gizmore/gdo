@@ -88,7 +88,7 @@ module GDO::DB
   def fetch_as(table)
     return nil unless vars = fetch_assoc
     return table._cache.init_cached(vars) if @cached && table.gdo_cached
-    return table.blank(vars).persisted
+    return table.blank(vars).dirty(false).persisted
   end
   
 #   

@@ -25,7 +25,7 @@ module GDO::Core
 
     include ::GDO::Core::WithEvents
     include ::GDO::Core::WithInstance
-    include ::GDO::Core::IsModule
+    extend ::GDO::Core::IsModule
 
     #################
     ### Overrides ###
@@ -77,8 +77,8 @@ module GDO::Core
     ############
     ### Path ###
     ############
-    def self._path; @path; end
-    def self.path(path); @path = path; self; end
+    def _path; @path; end
+    def path(path); @path = path; self; end
 
     #############
     ### Theme ###
@@ -102,7 +102,7 @@ module GDO::Core
     # @return [GDO::Method::Base]
     #
     def gdo_method(method_name)
-      const_name = "::GDO::#{module_name}::Method::#{method_name}"
+      const_name = "GDO::#{module_name}::Method::#{method_name}"
       const = Object.const_get(const_name) or raise ::GDO::Core::Exception.new(t(:err_unknown_method, module_name, method_name))
       const.instance
     end

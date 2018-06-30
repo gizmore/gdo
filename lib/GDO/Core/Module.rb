@@ -23,5 +23,9 @@ class GDO::Core::Module < GDO::Core::GDO_Module
   end
 
   def cfg_themes; config_value('theme'); end
+  
+  subscribe(:gdo_include_assets) do
+    page = ::GDO::UI::GDT_WebPage.instance
+  end
 
 end

@@ -41,14 +41,14 @@ module GDO::Method
       }
 
       # No submit shows form
-      response_with(form)
+      _response.add_field form
     end
     
     def call_submit_func(gdt, form)
-      send("execute_#{gdt._name}")
+      send("execute_#{gdt._name}", form)
     end
     
-    def execute_submit
+    def execute_submit(form)
       raise ::GDO::Core::Exception.new(t(:err_form_stub_submit))
     end
     

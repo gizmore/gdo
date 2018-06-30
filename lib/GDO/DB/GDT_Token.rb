@@ -1,12 +1,26 @@
-module GDO::DB
-  class GDT_Token < ::GDO::DB::GDT_String
+require 'securerandom'
+#
+# Overwrites initial value with a random token.
+#
+# @version 1.00
+# @since 1.00
+# @author gizmore@wechall.net
+# @license MIT
+#
+class GDO::DB::GDT_Token < GDO::DB::GDT_String
 
-    def initialize(name=nil)
-      super
-      @min = @max = 8
-      @encoding = ASCII
-      @case_i = false
-    end
+  TOKEN_LENGTH ||= 16
 
+  def initialize(name=nil)
+    super
+    @min = @max = TOKEN_LENGTH
+    @encoding = ASCII
+    @case_i = false
+    @initial = self.class.generate
   end
+  
+  def self.generate
+    ::SecureRandom.hex(TOKEN_LENGTH/2)
+  end
+
 end

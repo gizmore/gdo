@@ -18,12 +18,13 @@ class GDO::Lang::Trans
   ###############
   ### Factory ###
   ###############
-  def self.init(iso='bot'); instance.iso(iso); end
+  DEFAULT_ISO ||= 'en'
+  def self.init(iso=DEFAULT_ISO); instance.iso(iso); end
   def iso(iso); @iso = iso.to_s; self; end
   def _iso; @iso; end
 
   def initialize
-    @iso = 'en'
+    @iso = DEFAULT_ISO
     @pathes = []
     @cache = {}
   end
@@ -64,9 +65,10 @@ class GDO::Lang::Trans
     _reload(iso)
   end
   
+  private
+  
   def _reload(iso)
     @pathes.each {|path|
-      path = 
       if File.file?("#{path}_#{iso}.yml")
         path = "#{path}_#{iso}.yml"
       else

@@ -1,10 +1,10 @@
 <div class="gdo-form-outer">
-<form
- id="gdo-<%=field._name%>"
- name="<%=field._name%>"
- method="post">
+  <form
+   id="gdo-<%=field._name%>"
+   name="<%=field._name%>"
+   method="post">
 <% field._fields.each do |gdt| %>
 <%= gdt.render_form %>
 <% end %>
-</form>
+  </form>
 </div>

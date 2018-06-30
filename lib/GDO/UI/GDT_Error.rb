@@ -1,6 +1,7 @@
 #
 # An error message in the UI.
 # Knows how to render.
+# If there is an exception it renders a trace?
 #
 class GDO::UI::GDT_Error < GDO::UI::GDT_Label
   
@@ -10,14 +11,13 @@ class GDO::UI::GDT_Error < GDO::UI::GDT_Label
   
   def self.make_with_exception(exception, log=true)
     ::GDO::Core::Log.exception(exception) if log
-
-    instance = new
-    instance.exception(exception)
-    
-    trace = exception.backtrace
-    trace = trace ? trace.join("\n") : ''
-    
-    instance.text(exception.to_s+"\n"+trace)
+    new.
+    exception(exception).
+    text(exception.to_s)
+  end
+  
+  def render_html
+    render_template('gdt_error.erb')
   end
 
 end

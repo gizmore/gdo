@@ -1,19 +1,19 @@
 module GDO::Core::IsModule
 
-  def self.included(base)
-    ::GDO::Core::Log.debug("GDO::Core::IsModule::included#{base} ... setting up...")
-    base.include InstanceMethods
-    base.extend ClassMethods
-  end
+  # def self.included(base)
+    # ::GDO::Core::Log.debug("GDO::Core::IsModule::included#{base} ... setting up...")
+    # base.include InstanceMethods
+    # base.extend ClassMethods
+  # end
 
-  module InstanceMethods
-    
-    def path(path); @path = path; self; end
-    def _path; @path; end
-    
-  end
+  # module InstanceMethods
+#     
+    # def path(path); @path = path; self; end
+    # def _path; @path; end
+#     
+  # end
 
-  module ClassMethods
+  # module ClassMethods
 
     def is_module(path)
       # Debug
@@ -22,13 +22,17 @@ module GDO::Core::IsModule
       
       # Add Methods module with autoloader to this module class
       mod = instance
-      methods = mod.module_package.const_set("Method", ::Module.new)
-      methods.extend(::GDO::Autoloader)
+      package = mod.module_package
+      unless package.constants.include?(:Method)
+        methods = ::Module.new
+        methods.extend(::GDO::Autoloader)
+        package.const_set(:Method, methods)
+      end
       
       # Add to cache
       ::GDO::Core::ModuleLoader.instance.add_module(mod.path(File.dirname(path)))
     end
     
-  end
+  # end
 
 end

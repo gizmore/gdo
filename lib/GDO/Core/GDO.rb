@@ -116,10 +116,10 @@ module GDO::Core
         elsif data.has_key?(k.to_s)
           instance.set_var(k, data[k.to_s].to_s, true)
         else
-          instance.set_var(k, gdt._initial, false)
+          instance.set_var(k, gdt._initial, true)
         end
       }
-      # remaining
+      # remaining, which might not be columns
       data.each{|k,v|
         instance.set_var(k, v, false)
       }

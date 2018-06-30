@@ -13,7 +13,7 @@ class GDO::Method::GDT_Response < ::GDO::Core::GDT
   ###############
   def _headers; @headers ||= {}; end
   def headers(headers); @headers = headers; self; end
-  
+  def header(key, value=nil); return _headers[key] if value.nil?; _headers[key.to_s] = value; self; end
   ###########
   ### GDT ###
   ###########

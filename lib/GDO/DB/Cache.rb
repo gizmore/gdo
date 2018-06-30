@@ -62,7 +62,7 @@ module GDO::DB
       dummy.set_vars(vars)
       id = dummy.get_id
       if !@cache[id]
-        @cache[id] = dummy.persisted
+        @cache[id] = dummy.dirty(false).persisted
         @dummy = nil
       end
       @cache[id]

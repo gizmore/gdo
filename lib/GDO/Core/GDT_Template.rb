@@ -12,22 +12,24 @@ class GDO::Core::GDT_Template < GDO::Core::GDT
   ### GDT ###
   ###########
   # template path
-  def _file; @file; end
-  def file(path); @file = path; self; end
+  def _tpath; @tpath; end
+  def tpath(tpath); @tpath = tpath; self; end
   
   # template module
   def _tmod; @tmod; end
   def tmod(tmod); @tmod = tmod; self; end
 
   # template vars
-  def _tvars; @tvars; end
-  def tvars(tvars); @tvars = tvars; self; end
+  def _tvars; @tvars||={field:self}; end
+  def tvars(tvars); @tvars=nil; _tvars.merge!(tvars); self; end
+  def tvar(key, value); _tvars[key.to_s] = value; self; end
 
   ##############
   ### Render ###
   ##############
-  def render
-    self.class.render_template(@tmod, @file, @tvars)
+  def render; render_html; end
+  def render_html
+    self.class.render_template(@tmod, @tpath, _tvars)
   end
 
   ################

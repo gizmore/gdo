@@ -1,1 +1,3 @@
 err_unknown_config: "Unknown configuration variable: %s."
+err_autoload_missing_file: "File not found: %s"
+err_gdo_autoload: "Autoloader could not load %s %s %s"

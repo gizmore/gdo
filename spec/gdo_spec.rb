@@ -103,6 +103,12 @@ module GDO
       expect(html.index('<input')).to be_truthy
       expect(html.index('<form')).to be_truthy
     end
+    
+    it "has easy method calling" do
+      expect(::GDO::Core::Method::Index.new.execute_method.render_html.index('Welcome')).to be_truthy
+      expect(::GDO::Core::Method::Index.new.execute_method.render_html.index('Welcome')).to be_truthy
+    end
+    
 
     it "can create and drop gdo tables" do
       ::GDO::SPECSimpleKV.table.create_table
@@ -189,11 +195,50 @@ module GDO
       expect(::GDO::User::GDO_User.table.find_by_name(:gizmore)).to be_truthy
     end
     
+    it "can serialize data" do
+      # JSON
+      json = ::GDO::DB::GDT_JSON.new
+      obj = {"test" => 123}
+      json.value(obj)
+      obj2 = json.to_value(json._var)
+      expect(obj).to eq(obj2)
+      # TODO: MsgPack support. (thx havenwood)
+      # Marshall
+      marshal = ::GDO::DB::GDT_Serialize.new
+      obj = {"test" => ::GDO::DB::GDT_Int.new.bytes(1).unsigned.var("4")} # test a more complex object
+      marshal.value(obj)
+      obj2 = marshal.to_value(marshal._var)
+      expect(obj2["test"]._bytes).to eq(1)
+    end
+    
+    it "can do session magic" do
+      # Request 1
+      ::GDO::Core::Application.new_request({})
+      session = ::GDO::User::GDO_Session.start
+      cookie = ::GDO::Core::Application.cookie(::GDO::User::GDO_Session::COOKIE_NAME)
+      expect(cookie).to eq(::GDO::User::GDO_Session::MAGIC_VALUE)
+      # Request 2
+      ::GDO::Core::Application.new_request({'COOKIE' => cookie})
+      session = ::GDO::User::GDO_Session.start(cookie)
+      session.set(:stubby, :flubby)
+      cookie = ::GDO::Core::Application.cookie(::GDO::User::GDO_Session::COOKIE_NAME)
+      expect(cookie != ::GDO::User::GDO_Session::MAGIC_VALUE).to be_truthy
+      expect(cookie).to be_truthy
+      expect(session.persisted?).to be_truthy
+      # Request 3
+      ::GDO::Core::Application.new_request({'COOKIE' => cookie})
+      session = ::GDO::User::GDO_Session.start(cookie)
+      expect(session.get(:stubby)).to eq(:flubby)
+    end
+    
+    
     it "does some basic checks on the rake integration" do
+      ::GDO::Core::Application.reload_gdo
       app = ::GDO::Core::Application.instance
-      ::GDO::Core::Application.call({
-        
-      })
+      # No args at all
+      code, headers, response = app.call({})
+      expect(code).to eq(200)
+      expect(response.index('outer')).to be_truthy
     end
     
 
