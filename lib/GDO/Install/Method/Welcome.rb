@@ -1,4 +1,4 @@
-class GDO::Install::Method::Welcome < GDO::Method::Template
+class GDO::Install::Method::Welcome < GDO::Method::Page
   
   
   

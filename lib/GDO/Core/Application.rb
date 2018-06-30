@@ -4,8 +4,8 @@
 #
 #
 require "rack"
-require "rack/utils"
-require "rack/query_parser"
+# require "rack/utils"
+# require "rack/query_parser"
 
 class GDO::Core::Application
   
@@ -15,9 +15,6 @@ class GDO::Core::Application
   def self.init
     instance
   end
-
-  def initialize
-  end
   
   def _default_module; @default_module||ENV['GDO_DEFAULT_MODULE']||'Core'; end
   def default_module(mod); @default_module = mod; self; end
@@ -25,10 +22,12 @@ class GDO::Core::Application
   def _default_method; @default_method||ENV['GDO_DEFAULT_METHOD']||'Index'; end
   def default_method(method); @default_method = method; self; end
   
-  
   #############
   ### HTTPD ###
   #############
+  def self.http_protocol; request.scheme || ENV['GDO_HTTP_SCHEMA'] || 'http'; end
+  def self.http_domain; request.host || ENV['GDO_HTTP_DOMAIN'] || 'localhost'; end
+  def self.http_port; port = request.port || ENV['GDO_HTTP_PORT'] || '80'; port.to_s; end
   def self.call(env); instance.call(env); end
   def call(env)
     begin
@@ -114,6 +113,7 @@ class GDO::Core::Application
   #################
   def self.new_request(env={})
     Thread.current[:gdo_request] = nil
+    Thread.current[:gdo_response] = nil
     request(env)
   end
   def self.request(env={})

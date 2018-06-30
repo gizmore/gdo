@@ -1,6 +1,8 @@
 <div class="gdo-alert gdo-error">
 	<div class="gdo-title"><%=html(field._text)%></div>
+<% if field._exception %>
 	<div class="gdo-backtrace">
 		<%= html(field._exception.backtrace.join("\n")) %>
 	</div>
+<% end %>
 </div>

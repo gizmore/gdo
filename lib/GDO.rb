@@ -65,14 +65,12 @@ class Object
   def escape(string); ::GDO::Core::GDO.escape(string); end
   def quote(string); ::GDO::Core::GDO.quote(string); end
   
-
   # Global Reload
   def reload
     if is_a?(::Module)
       begin
         path = name.gsub('::','/')+".rb"
         load(path)
-        # ::GDO::Core::Log.debug("Reloaded GDO module #{name} from #{path}")
       rescue LoadError => e
       end
     end
@@ -82,7 +80,6 @@ class Object
       begin
         path = name.gsub('::','/')+".rb"
         load(path)
-        # ::GDO::Core::Log.debug("Reloaded GDO class #{name} from #{path}")
       rescue LoadError => e
       end
     end
@@ -95,7 +92,9 @@ end
 require "GDO/Core/Module"
 require "GDO/DB/Module"
 require "GDO/Form/Module"
+require "GDO/Install/Module"
 require "GDO/User/Module"
 require "GDO/Mail/Module"
 # require "GDO/Net/Module"
+require "GDO/Table/Module"
 require "GDO/UI/Module"

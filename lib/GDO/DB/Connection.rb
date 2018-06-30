@@ -42,7 +42,7 @@ module GDO::DB
               username: @username,
               password: @password,
               database: @database,
-              reconnect: true,
+              reconnect: false,
           )
           t2 = Time.new - t1
           @queries_time += t2
@@ -73,8 +73,14 @@ module GDO::DB
       query(query)
     end
 
+    #
+    # Query the database.
+    # Rety once on error to reconnect.
+    #
     def query(query)
+
       begin
+        retries ||= 0
         # might connect
         link = get_link
         
@@ -99,6 +105,12 @@ module GDO::DB
         # yay result
         result
         
+      rescue Mysql2::Error => e
+        @link = nil
+        retry if (retries += 1) <= 1
+        ::GDO::Core::Log.exception(e) # Workaround
+        raise ::GDO::DB::Exception.new(e.to_s).query(query) # turn to GDO::DB::Exception
+
       rescue StandardError => e
         ::GDO::Core::Log.exception(e) # log MySQL2 exception
         raise ::GDO::DB::Exception.new(e.to_s).query(query) # turn to GDO::DB::Exception

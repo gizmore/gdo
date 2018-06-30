@@ -48,7 +48,7 @@ class GDO::Core::Log
   ####################
   def self.exception(exception)
     trace = exception.backtrace || []
-    critical(exception.message + "\n" + trace.join("\n"))
+    critical(exception.class.name + ": " + exception.message + "\n" + trace.join("\n"))
   end
   def self.critical(message)
     log('criticial', message) if @@level >= CRITICAL

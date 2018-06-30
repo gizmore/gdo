@@ -12,7 +12,7 @@ module GDO::Core
     def code; @code; end
 
     def to_s
-      "GDO::Core::Exception: #{@message}"
+      "#{@message}"
     end
     
   end

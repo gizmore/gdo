@@ -10,8 +10,8 @@ class GDO::Form::GDT_Form <GDO::Core::GDT
 
   include ::GDO::Core::WithFields
   
-  def render_html; render_template('form/gdt_form.erb'); end
-  
+  def render_html; ::GDO::Core::GDT_Template.render_template('Form', 'form/gdt_form.erb', {:field => self}); end
+ 
   def validate_form
     valid = true
     _fields.each do |gdt|

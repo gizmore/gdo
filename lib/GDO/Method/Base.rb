@@ -40,17 +40,21 @@ class GDO::Method::Base < GDO::Core::GDT
   # You override only "execute".
   #
   def execute_method
+    puts "Before"
     session_start if with_session?
+    puts "After"
     execute
     _response
     rescue GDO::Core::Exception => e
       # Own exceptions have a code
       _response.add_field ::GDO::UI::GDT_Error.make_with_exception(e)
       _response.code(e.code)
+      _response
     rescue => e
       # Ruby exceptions are 500
       _response.add_field ::GDO::UI::GDT_Error.make_with_exception(e)
       _response.code(500)
+      _response
   end
   
   def execute

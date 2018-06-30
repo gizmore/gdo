@@ -99,16 +99,24 @@ class GDO::Core::GDT
   ### Render ###
   ##############
   def render; @var; end
-  def render_form; raise ::GDO::Core::Exception.new(t(:err_cannot_render_form, self.class.name)); end
+  
+  # HTML rendering
   def render_html; html(@var); end
-  def render_json; { @name => render }; end
+  def render_form; render_html; end
+  def render_option; render_html; end
+  def render_cell; render_html; end
+  def render_filter; end
+  # Other protocols
+  def render_cli; @var; end
+  def render_json; { @name => render_cli }; end
   def render_ws; end
+
   # Render helper
   # @deprecated
-  def render_template(path, args={})
-    args['field'] = self # field is default to self
-    ::GDO::Core::GDT_Template.render_template(module_name, path, args)
-  end
+  # def render_template(path, args={})
+    # args['field'] = self # field is default to self
+    # ::GDO::Core::GDT_Template.render_template(module_name, path, args)
+  # end
 
   ################
   ### Validate ###

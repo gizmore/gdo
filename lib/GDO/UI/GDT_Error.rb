@@ -11,13 +11,12 @@ class GDO::UI::GDT_Error < GDO::UI::GDT_Label
   
   def self.make_with_exception(exception, log=true)
     ::GDO::Core::Log.exception(exception) if log
-    new.
-    exception(exception).
-    text(exception.to_s)
+    new.exception(exception).text(exception.to_s)
   end
   
-  def render_html
-    render_template('gdt_error.erb')
-  end
+  ##############
+  ### Render ###
+  ##############
+  def render_html; ::GDO::Core::GDT_Template.render_template('UI', 'gdt_error.erb', field: self); end
 
 end

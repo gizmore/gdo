@@ -25,6 +25,6 @@ class GDO::Method::GDT_Response < ::GDO::Core::GDT
   def _code; @code; end 
   def code(code); @code = code; self; end
   
-  def _exception; _fields[0]._exception; end
+  def _exception; _fields[0]._exception rescue nil; end
   
 end

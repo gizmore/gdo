@@ -1,0 +1,21 @@
+<div class="gdo-table-outer">
+	<div class="gdo-title"><%=field._label%></div>
+	<table id="gdo-<%=field._name%>">
+		<thead>
+			<tr>
+<% field._fields.each do |gdt| %>
+<%= gdt.render_filter %>
+<% end %>
+			</tr>
+		</thead>
+		<tbody>
+<% while row = field.fetch_row %>
+			<tr>
+<% field._fields.each do |gdt| %>
+				<td><%= gdt.gdo(row).render_cell %></td>
+<% end %>
+<% end %>			
+			</tr>
+		</tbody>
+	</table>
+</div>

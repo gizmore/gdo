@@ -29,7 +29,7 @@ class GDO::UI::GDT_WebPage < GDO::UI::GDT_Container
   
   def render_html
     publish(:gdo_include_assets, self)
-    render_template('gdt_webpage.erb', page: self, response: @response)
+    ::GDO::Core::GDT_Template.render_template('UI', 'gdt_webpage.erb', page: self, response: @response)
   end
   
 end

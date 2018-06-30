@@ -92,6 +92,10 @@ class GDO::User::GDO_Session < GDO::Core::GDO
     return set_magic_cookie if cookie.nil?
     return new_session if cookie == MAGIC_VALUE
     return load_session(cookie)
+    rescue ::GDO::Core::Exception
+      return new_instance
+    rescue
+      byebug
   end
   
   private

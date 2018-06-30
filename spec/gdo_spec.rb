@@ -245,6 +245,18 @@ module GDO
       expect(response.index('outer')).to be_truthy
       expect(response.index(Time.new.year.to_s)).to be_truthy
     end
+    
+    it "has working UI GDT components" do
+      cookie = ::GDO::Core::Application.cookie(::GDO::User::GDO_Session::COOKIE_NAME)
+      ::GDO::Core::Application.new_request({'COOKIE' => cookie, 'HTTP_HOST' => 'localhost'})
+      link = ::GDO::UI::GDT_Link.make_url('Install', 'Welcome', 'a=b')
+      expect(link.render_html.index('<a')).to be_truthy
+      box = ::GDO::UI::GDT_Box.new.vertical
+      box.add_field link
+      html = box.render_html
+      expect(html.index('<a')).to be_truthy
+      expect(html.index('gdo-box-vertical')).to be_truthy
+    end
 
   end
 end
