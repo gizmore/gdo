@@ -1,5 +1,5 @@
-module GDO::UI
-  class GDT_Button < GDO::Core::GDT
+class GDO::UI::GDT_Button < GDO::Core::GDT
 
-  end
+  def render_html; end
+
 end

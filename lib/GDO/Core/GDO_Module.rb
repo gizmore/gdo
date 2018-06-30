@@ -79,6 +79,7 @@ module GDO::Core
     ############
     def _path; @path; end
     def path(path); @path = path; self; end
+    def path_for(file); "#{_path}/#{file}"; end
 
     #############
     ### Theme ###
@@ -180,7 +181,16 @@ module GDO::Core
       []
     end
 
-
+    ##############
+    ### Assets ###
+    ##############
+    def add_js(path)
+      
+    end
+    
+    def add_css(path)
+      
+    end
 
   end
 end

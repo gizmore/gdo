@@ -52,6 +52,9 @@ class GDO::Core::Application
       # Execute
       response = method.execute_method
 
+      page = GDO::UI::GDT_WebPage.instance.response(response)
+      [response._code, response._headers, page.render_html]
+
     rescue => ex
       # TODO: own exceptions are 200? nah?
       GDO::Core::Log.exception(ex)
@@ -59,13 +62,11 @@ class GDO::Core::Application
       response = GDO::Method::GDT_Response.make_with(
         GDO::UI::GDT_Error.make_with_exception(ex)
       ).code(500)
-    end
 
-    # Render page
-    ::GDO::Core::Log.verbose("Rendering page with headers" + response._headers.inspect)
+      page = GDO::UI::GDT_WebPage.instance.response(response)
+      [response._code, response._headers, page.render_html]
+    end
     
-    page = GDO::UI::GDT_WebPage.instance.response(response)
-    [response._code, response._headers, page.render_html]
   end
     
 

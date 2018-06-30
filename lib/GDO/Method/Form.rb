@@ -37,7 +37,7 @@ module GDO::Method
       
       # A submit calls execute_{action}
       form.fields_of(::GDO::Form::GDT_Submit).each{|gdt|
-        return call_submit_func(gdt, form) if gdt._var == '1'
+        return call_submit_func(gdt, form) if gdt._var
       }
 
       # No submit shows form
@@ -45,10 +45,15 @@ module GDO::Method
     end
     
     def call_submit_func(gdt, form)
-      send("execute_#{gdt._name}", form)
+      
+      if !form.validate_form
+        _response.add_field form
+      else
+        send("execute_#{gdt._name}")
+      end
     end
     
-    def execute_submit(form)
+    def execute_submit
       raise ::GDO::Core::Exception.new(t(:err_form_stub_submit))
     end
     

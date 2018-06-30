@@ -57,6 +57,14 @@ class GDO::Method::Base < GDO::Core::GDT
     raise ::GDO::Core::Exception.new(t(:err_execute_stub))
   end
   
+  def success(message)
+    _response.add_field ::GDO::UI::GDT_Success.new.text(message)
+  end
+  
+  def error(message)
+    _response.add_field ::GDO::UI::GDT_Error.new.text(message)
+  end
+  
   #
   # A response with a success message
   #

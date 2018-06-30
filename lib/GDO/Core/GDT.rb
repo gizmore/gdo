@@ -22,6 +22,7 @@ class GDO::Core::GDT
     @val = nil
     
     @name = name == nil ? default_name : name.to_s
+    @label = default_label
 
     @not_null = false
     @unique = false
@@ -56,7 +57,7 @@ class GDO::Core::GDT
 
   def _label; @label; end
   def label(label); @label = label; self; end
-  # def default_label; nil; end
+  def default_label; nil; end
 
   def _not_null; @not_null; end
   def not_null; @not_null = true; self; end
@@ -103,9 +104,10 @@ class GDO::Core::GDT
   def render_json; { @name => render }; end
   def render_ws; end
   # Render helper
+  # @deprecated
   def render_template(path, args={})
     args['field'] = self # field is default to self
-    GDO::Core::GDT_Template.render_template(module_name, path, args)
+    ::GDO::Core::GDT_Template.render_template(module_name, path, args)
   end
 
   ################

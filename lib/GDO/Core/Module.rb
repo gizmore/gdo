@@ -24,8 +24,11 @@ class GDO::Core::Module < GDO::Core::GDO_Module
 
   def cfg_themes; config_value('theme'); end
   
-  subscribe(:gdo_include_assets) do
+  subscribe(:gdo_include_assets, 'gdo-core-assets') do
     page = ::GDO::UI::GDT_WebPage.instance
+    instance.add_js('gdo.js')
+    instance.add_css('gdo.css')
+    # page.favicon()
   end
 
 end

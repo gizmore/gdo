@@ -46,7 +46,7 @@ class GDO::DB::GDT_String < GDO::Core::GDT
   ##############
   ### Render ###
   ##############
-  def render_form; render_template('form/gdt_string.erb'); end
+  def render_form; ::GDO::Core::GDT_Template.render_template('DB', 'form/gdt_string.erb', {:field => self}); end
 
   #############
   ### MySQL ###
@@ -74,14 +74,10 @@ class GDO::DB::GDT_String < GDO::Core::GDT
   ################
   ### Validate ###
   ################
-  def string_error
-    error(t('err_'))
-  end
-
   def validate(value)
-    return unless super.validate(value)
-    return string_error if (!@min.nil?) && (@min > value.length)
-    return string_error if (!@max.nil?) && (@max < value.length)
+    return unless super(value)
+    return error(t(:err_str_too_short, @min)) if @min && (@min > value.length)
+    return error(t(:err_str_too_long, @max)) if @max && (@max < value.length)
     true
   end
 

@@ -1,0 +1,13 @@
+<div class="gdo-container<%=field.html_error_class%>">
+	<label for="gdo-<%=field._name%>"><%=html(field._label)%>></label>
+	<select
+	 name="<%=field._name%>"
+	 id="gdo-<%=field._name%>">
+<% field._choices.each do |value,label| %>
+		<option value="<%=value%>"><%=html(label)%></option>
+<% end %>
+	</select>
+<% if field.has_error? %>
+	<div class="gdo-field-error"><%=html(field._error)%></div>
+<% end %>
+</div>

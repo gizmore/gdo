@@ -13,8 +13,18 @@
 # @license MIT
 # @author gizmore@wechall.net
 #
-class GDO::Form::GDT_CSRF < GDO::Core::GDT
+class GDO::Form::GDT_CSRF < GDO::Form::GDT_Hidden
   
+  def default_name; "csrf"; end
+
+  def initialize
+    super
+    @initial
+  end
+  
+  ################
+  ### Validate ###
+  ################
   def validate(value)
     true # TODO: Re-Implement from GDO6
   end
