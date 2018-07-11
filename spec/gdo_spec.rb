@@ -4,7 +4,7 @@
 #
 require "byebug"
 require "mysql2"
-require "gdo"
+require "GDO"
 
 # Test classes
 module GDO
@@ -89,7 +89,7 @@ module GDO
     end
 
     it "can create gdo in memory" do
-      kv = GDO::SPECSimpleKV.blank("skv_key" => 'version', "skv_value" => '1.0.0')
+      kv = GDO::SPECSimpleKV.blank("skv_key" => 'version', "skv_value" => '1.00')
     end
 
     it "has a working template engine" do
