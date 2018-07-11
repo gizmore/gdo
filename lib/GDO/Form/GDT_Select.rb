@@ -25,6 +25,6 @@ class GDO::Form::GDT_Select < GDO::Form::GDT_ComboBox
   ##############
   ### Render ###
   ##############
-  def render_form; render_template('form/gdt_select.erb'); end
+  def render_form; ::GDO::Core::GDT_Template.render_template('Form', 'form/gdt_select.erb', {:field => self}); end
 
 end

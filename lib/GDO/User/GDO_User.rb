@@ -37,7 +37,8 @@ class GDO::User::GDO_User < GDO::Core::GDO
       ::GDO::User::GDT_Username.new(:user_guest_name), # it can have a guest name for guests
       ::GDO::DB::GDT_String.new(:user_real_name), # it can have a real name as well
       ::GDO::DB::GDT_String.new(:user_display_name), # is set to display name for search etc
-      ::GDO::Date::GDT_CreatedAt.new(:user_created_at)
+      ::GDO::Date::GDT_CreatedAt.new(:user_created_at),
+      ::GDO::Net::GDT_IP.new(:user_register_ip),
     ]
   end
   

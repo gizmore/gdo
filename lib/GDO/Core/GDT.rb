@@ -92,6 +92,7 @@ class GDO::Core::GDT
   def _value; @val ||= to_value(@var); end
   def value(value); @val = value; @var = to_var(value); self; end
   def to_value(var); var.to_s; end
+  def hash_values; nil; end
   
   def reset; @var = @initial; @val = nil; self; end
   

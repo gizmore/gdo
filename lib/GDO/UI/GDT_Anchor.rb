@@ -54,16 +54,7 @@ class GDO::UI::GDT_Anchor < GDO::UI::GDT_Label
   def gdo_href
     append = @anchor_query == nil ? '' : "&#{@anchor_query}"
     url = "/?mo=#{@anchor_module}&me=#{@anchor_method}#{append}"
-    @anchor_local ? url : external_gdo_href(url)
-  end
-  
-  def external_gdo_href(url)
-    app = ::GDO::Core::Application
-    protocol = app.http_protocol
-    domain = app.http_domain
-    port = app.http_port
-    port = (port == "80") || (port == "443") || (port == "0") ? '' : ":#{port}"
-    return "#{protocol}://#{domain}#{port}#{url}"
+    @anchor_local ? url : ::GDO::Net::GDT_Url.external_gdo_href(url)
   end
   
   ##############

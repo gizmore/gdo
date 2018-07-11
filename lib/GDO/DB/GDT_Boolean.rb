@@ -11,5 +11,9 @@ class GDO::DB::GDT_Boolean < GDO::Form::GDT_Select
     choices['1'] = t(:yes)
     choices
   end
+  
+  def to_value(var)
+    var == "" ? nil : (var == "1")
+  end
 
 end

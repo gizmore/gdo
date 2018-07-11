@@ -232,6 +232,10 @@ module GDO::Core
       self
     end
     
+    def count_where(where)
+      query.select('COUNT(*)').where(where).execute.fetch_column
+    end
+    
     ###############
     ### Columns ###
     ###############

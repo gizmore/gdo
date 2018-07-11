@@ -9,7 +9,7 @@ require "GDO/version"
 # Create simple autoloader
 module GDO
   module Autoloader
-    # Simply include missing constants as is in the file system. e.g.: GDO::Net::GDT_URL  => require "GDO/Net/GDT_URL"
+    # Simply include missing constants as is in the file system. e.g.: GDO::Net::GDT_Url  => require "GDO/Net/GDT_Url"
     def const_missing(const_name)
       path = name.gsub('::', '/') + "/#{const_name}"
       require path
@@ -64,6 +64,13 @@ class Object
   # MySQL
   def escape(string); ::GDO::Core::GDO.escape(string); end
   def quote(string); ::GDO::Core::GDO.quote(string); end
+  
+  # URLs
+  def href(_module, method, append=''); "/?mo=#{_module}&me=#{method}#{append}"; end
+  def url(_module, method, append=''); ::GDO::Net::GDT_Url.gdo_external_url(href(_module, method, append)); end
+  
+  # Site
+  def sitename; t(:sitename); end
   
   # Global Reload
   def reload

@@ -38,4 +38,8 @@ class GDO::Mail::Envelope
     
   end
   
+  def send_as_html
+    
+  end
+  
 end

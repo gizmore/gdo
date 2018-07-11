@@ -31,6 +31,9 @@ class GDO::Method::Base < GDO::Core::GDT
     raise ::GDO::Core::Exception.new(t(:err_unknown_method_parameter, name, field))
   end
   
+  def param_var(field); parameter(field)._var; end
+  def param_value(field); parameter(field)._value; end
+  
   def render_template(path, vars={})
     GDO::Core::GDT_Template.render_template(module_name, path, vars)
   end
@@ -40,9 +43,7 @@ class GDO::Method::Base < GDO::Core::GDT
   # You override only "execute".
   #
   def execute_method
-    puts "Before"
     session_start if with_session?
-    puts "After"
     execute
     _response
     rescue GDO::Core::Exception => e
