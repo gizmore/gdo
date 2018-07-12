@@ -11,7 +11,7 @@ module GDO::User
     def initialize(name=nil)
       super
       @min = 2; @max = 32
-      @pattern = /[a-z][-a-z_0-9]{1,31}/i
+      @pattern = "/[a-z][-a-z_0-9]{1,31}/i"
     end
 
   end

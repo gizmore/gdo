@@ -108,6 +108,18 @@ module GDO::Core
       const.new #instance
     end
     
+    def gdo_methods
+      @methods ||= _gdo_methods
+    end
+    
+    def _gdo_methods
+      methods = {}
+      ::GDO::File::Walker.proc_files(path_for("Method")) do |path|
+        method_name = path.rsubstr_from("/")[0..-3]
+        methods[method_name] = gdo_method(method_name)
+      end
+      methods
+    end
 
     ##############
     ### Config ###

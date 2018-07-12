@@ -6,10 +6,12 @@
 # @license MIT
 # @author gizmore@wechall.net
 #
+# @see GDO::DB::GDT_DBField
+#
+# @see DOC_GDT.md
+#
 class GDO::Core::GDT
   
-#  include GDO::UI::WithRubyJQuery
-
   # Statistics
   def self.allocated; @@allocated; end
 
@@ -24,26 +26,13 @@ class GDO::Core::GDT
     @name = name == nil ? default_name : name.to_s
     @label = default_label
 
-    @not_null = false
-    @unique = false
-    @index = false
-    @primary = false
-
     @error = nil
+    @not_null = false
     
     @@allocated ||= 0; @@allocated += 1
   end
   
   def module_name; self.class.name.split('::')[1]; end
-  # def self.module_name; name.split('::')[1]; end
-
-  ##########
-  ### DB ###
-  ##########
-  def identifier; ::GDO::Core::GDO.quoteIdentifier(@name); end
-  def column_define; raise ::GDO::Core::Exception.new(t(:err_not_a_db_gdt, self.class.name)); end
-  def column_define_null; @not_null ? 'NOT NULL ' : ''; end
-  def column_define_default; "DEFAULT #{::GDO::Core::GDO.quote(@initial)} " unless @initial.nil?; end
 
   ###########
   ### GDT ###
@@ -62,14 +51,9 @@ class GDO::Core::GDT
   def _not_null; @not_null; end
   def not_null; @not_null = true; self; end
 
-  def _unique; @unique; end
-  def unique; @unique = true; self; end
-
-  def index; @index = true; self; end
-  def _index; @index; end
-
-  def primary; @primary = true; self; end
-  def _primary; @primary; end
+  ##############
+  ### Values ###
+  ##############
 
   def _initial; @initial; end
   def initial(initial); @initial = initial.to_s; var(initial); end
@@ -141,7 +125,7 @@ class GDO::Core::GDT
   ##############
   ### Events ###
   ##############
-  def before_create(gdo); end
+  def before_create(gdo, query); end
   def after_create(gdo); end
   def before_update(gdo, query); end
   def after_update(gdo); end

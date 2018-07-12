@@ -26,7 +26,7 @@ class GDO::DB::GDT_Enum < GDO::Form::GDT_Select
   ############
   ### Enum ###
   ############
-  def enum_values(*values); @enum_values = values.map{|val|val.to_s}; self; end
-  def _enum_values; @enum_values; end
+  def enums(*values); @enum_values = values.map{|val|val.to_s}; self; end
+  def _enums; @enum_values; end
   
 end

@@ -8,7 +8,7 @@
 # @license MIT
 # @author gizmore@wechall.net
 #
-class GDO::DB::GDT_String < GDO::Core::GDT
+class GDO::DB::GDT_String < GDO::DB::GDT_DBField
 
   ###########
   ### GDT ###
@@ -75,7 +75,7 @@ class GDO::DB::GDT_String < GDO::Core::GDT
   ### Validate ###
   ################
   def validate(value)
-    return unless super(value)
+    return false unless super(value)
     return error(t(:err_str_too_short, @min)) if @min && (@min > value.length)
     return error(t(:err_str_too_long, @max)) if @max && (@max < value.length)
     true

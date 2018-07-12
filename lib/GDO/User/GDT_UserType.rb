@@ -15,6 +15,7 @@
 #
 class GDO::User::GDT_UserType < GDO::DB::GDT_Enum
   
+  SYSTEM ||= 'system'
   GHOST  ||= 'ghost'
   BOT    ||= 'bot'
   GUEST  ||= 'guest'
@@ -22,7 +23,7 @@ class GDO::User::GDT_UserType < GDO::DB::GDT_Enum
   
   def initialize(name=nil)
     super
-    enum_values(GHOST, BOT, GUEST, MEMBER)
+    enums(SYSTEM, GHOST, BOT, GUEST, MEMBER)
   end
 
 end

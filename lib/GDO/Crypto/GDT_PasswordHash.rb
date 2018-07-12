@@ -20,7 +20,7 @@ class GDO::Crypto::GDT_PasswordHash < GDO::DB::GDT_String
   
   def to_value(var)
     return nil if var.nil? || var.empty?
-    BCrypt::Password.create(var)
+    self.class.hash(var)
   end
   
   def self.hash(password)

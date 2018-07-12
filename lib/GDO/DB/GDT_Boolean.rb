@@ -15,5 +15,11 @@ class GDO::DB::GDT_Boolean < GDO::Form::GDT_Select
   def to_value(var)
     var == "" ? nil : (var == "1")
   end
+  
+  def validate(value)
+    return error_not_null if value.nil? && @not_null
+    return true if (value == true) || (value == false)
+    return error(t(:err_not_boolean))
+  end
 
 end

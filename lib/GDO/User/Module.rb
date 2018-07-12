@@ -30,16 +30,8 @@ module GDO::User
     #
     def after_install
       users = ::GDO::User::GDO_User
-      system = users.table.find(1)
-      return unless system.nil?
-      system = users.blank(
-        user_id: 1,
-        user_name: "System",
-        user_email: ENV['GDO_BOT_MAIL'] || 'gdo@localhost',
-        user_type: ::GDO::User::GDT_UserType::BOT,
-      ).replace
+      users.system
     end
-    
 
   end
 end

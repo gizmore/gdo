@@ -44,7 +44,6 @@ class GDO::Core::Application
       
       # Setup GDO method from mo/me and request
       method = gdo_module(mo).gdo_method(me)
-      method.request(request)
       method.set_parameters(request.GET)
       method.set_parameters(request.POST) if request.post?
       

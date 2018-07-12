@@ -17,7 +17,6 @@ class GDO::Net::GDT_IP < GDO::DB::GDT_String
   ###########
   def initialize(name=nil)
     super
-    min(3)
     max(39)
     ascii
     ip6
@@ -25,6 +24,6 @@ class GDO::Net::GDT_IP < GDO::DB::GDT_String
   
   # IPv6 support?
   def _ip6; @ip6; end
-  def ip6(ip6=true); @ip6 = ip6; self; end
+  def ip6(ip6=true); @ip6 = ip6; max(ip6 ? 39 : 15); end
   
 end

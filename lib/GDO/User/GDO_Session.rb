@@ -94,7 +94,8 @@ class GDO::User::GDO_Session < GDO::Core::GDO
     return load_session(cookie)
     rescue ::GDO::Core::Exception
       return new_instance
-    rescue
+    rescue => e
+      ::GDO::Core::Log.exception(e)
       byebug
   end
   

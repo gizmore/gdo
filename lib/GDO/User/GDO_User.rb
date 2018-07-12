@@ -14,6 +14,7 @@
 #
 # @see ::GDO::Core::GDO
 # @see ::GDO::User::GDT_Username
+# @see ::GDO::User::GDT_UserType
 #
 class GDO::User::GDO_User < GDO::Core::GDO
   
@@ -27,6 +28,7 @@ class GDO::User::GDO_User < GDO::Core::GDO
   ###########
   ### GDO ###
   ###########
+  # trying to keep these low
   def fields
     [
       ::GDO::DB::GDT_AutoInc.new(:user_id),
@@ -35,10 +37,8 @@ class GDO::User::GDO_User < GDO::Core::GDO
       ::GDO::Mail::GDT_Email.new(:user_email).unique,
       ::GDO::Crypto::GDT_PasswordHash.new(:user_password),
       ::GDO::User::GDT_Username.new(:user_guest_name), # it can have a guest name for guests
-      ::GDO::DB::GDT_String.new(:user_real_name), # it can have a real name as well
       ::GDO::DB::GDT_String.new(:user_display_name), # is set to display name for search etc
       ::GDO::Date::GDT_CreatedAt.new(:user_created_at),
-      ::GDO::Net::GDT_IP.new(:user_register_ip),
     ]
   end
   
@@ -68,7 +68,25 @@ class GDO::User::GDO_User < GDO::Core::GDO
       user_type: ::GDO::User::GDT_UserType::GHOST,
       user_display_name: "~~~#{t(:ghost)}~~~",
     )
-  end  
+  end
+  
+  ##############
+  ### System ###
+  ##############
+  def self.system
+    @@system ||= self._system
+  end
+  
+  def self._system
+    system = table.get_where("user_type='system'")
+    return system unless system.nil?
+    system = blank(
+      user_name: "System",
+      user_type: ::GDO::User::GDT_UserType::SYSTEM,
+      user_email: ENV['GDO_BOT_MAIL'] || 'gdo@localhost',
+      user_display_name: "!System!",
+    ).insert
+  end
   
   ##################
   ### Permission ###

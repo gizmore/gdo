@@ -31,6 +31,10 @@ class GDO::Core::ModuleLoader
     }
   end
   
+  def get_modules
+    @modules
+  end
+  
   def get_module(name)
     begin
       Object.const_get("::GDO::#{name}::Module").instance
@@ -61,6 +65,8 @@ class GDO::Core::ModuleLoader
   def inited_modules
     @modules.each {|name, mod|
       mod.after_init
+      mod.tables
+      mod.methods
     }
   end
   

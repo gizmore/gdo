@@ -15,8 +15,8 @@ class GDO::Method::Base < GDO::Core::GDT
   def gdo_module; get_module(module_name); end
   def method_name; self.class.name.split('::')[-1]; end
   
-  def _request; @request ||= ::GDO::Core::Application.request; end
-  def request(request); @request = request; self; end
+  def _request; ::GDO::Core::Application.request; end
+  # def request(request); @request = request; self; end
   
   def _response; ::GDO::Core::Application.response; end
   # def response(response); @response = response; self; end
