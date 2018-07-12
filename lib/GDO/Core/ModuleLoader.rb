@@ -1,5 +1,6 @@
 #
-#
+# ModuleLoader holds all module instances.
+# @todo Clear cache event
 #
 class GDO::Core::ModuleLoader
  
@@ -9,26 +10,19 @@ class GDO::Core::ModuleLoader
     instance.init
   end
   
-  def init
-    load_module_vars rescue nil
-    init_modules
-    inited_modules
-  end
-
   def initialize
     @modules = {}
   end
 
+  ###############
+  ### Factory ###
+  ###############
+  #
+  # Called by `init_module __FILE__`
+  #
   def add_module(mod)
     mod.class.instance_set(mod)
     @modules[mod.name] = mod
-  end
-  
-  def init_modules
-    @modules.each {|name, mod|
-      ::GDO::Core::Log.info("loading module #{name}")
-      mod.on_load_language
-    }
   end
   
   def get_modules
@@ -43,6 +37,32 @@ class GDO::Core::ModuleLoader
     end
   end
 
+  ##############
+  ### Loader ###
+  ##############
+  def init
+    load_module_vars rescue nil
+    init_modules
+    inited_modules
+  end
+  
+  private
+
+  def init_modules
+    @modules.each {|name, mod|
+      ::GDO::Core::Log.info("loading module #{name}")
+      mod.on_load_language
+      mod.tables
+      mod.methods
+    }
+  end
+  
+  def inited_modules
+    @modules.each {|name, mod|
+      mod.after_init
+    }
+  end
+
   def load_module_vars
     
     result = ::GDO::Core::GDO_Module.table.select.where("module_enabled").execute
@@ -55,19 +75,11 @@ class GDO::Core::ModuleLoader
     end
     
     result = ::GDO::Core::GDO_ModuleVar.table.select.join_object('mv_module').select('module_name').execute
-    while mv = result.fetch_object
-      klass = Object.const_get("::GDO::#{mv.get_var('module_name')}::Module") rescue nil
-      klass.instance.set_config_var(mv.get_var('mv_key'), mv.get_var('mv_value')) if klass
+    while mv = result.fetch_assoc
+      klass = Object.const_get("::GDO::#{mv['module_name']}::Module") rescue nil
+      klass.instance.set_config_var(mv['mv_key'], mv['mv_value']) if klass
     end
     
   end
 
-  def inited_modules
-    @modules.each {|name, mod|
-      mod.after_init
-      mod.tables
-      mod.methods
-    }
-  end
-  
 end
