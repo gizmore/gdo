@@ -17,14 +17,43 @@ class GDO::Method::GDT_Response < ::GDO::Core::GDT
   ###########
   ### GDT ###
   ###########
-  def initialize(name=nil)
-    super
-    @code = 200
-  end
-  
-  def _code; @code; end 
+  def _code; @code ||= 200; end 
   def code(code); @code = code; self; end
   
+  # TODO: Cycle fields for first exception!
   def _exception; _fields[0]._exception rescue nil; end
+  
+  def _pageless; @pageless; end
+  def pageless(pageless=true); @pageless = pageless; self; end
+  
+  def _filestream; @filestream; end
+  def filestream(filepath); @filestream = filepath; self; end
+  
+  #########################
+  ### HTTP Content Type ###
+  #########################
+  def page_raw
+    header('Content-Type', 'text/plain')
+    pageless
+  end
+  
+  def page_html
+    header('Content-Type', 'text/html')
+    pageless(false)
+  end
+  
+  def page
+    ::GDO::UI::GDT_WebPage.instance.response(self)
+  end
+  
+  ##############
+  ### Render ###
+  ##############
+  
+  def render_html
+     page.render_html
+  end
+  
+  
   
 end

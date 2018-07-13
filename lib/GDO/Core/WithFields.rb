@@ -1,3 +1,6 @@
+#
+#
+#
 module GDO::Core::WithFields
 
   def fields
@@ -18,26 +21,25 @@ module GDO::Core::WithFields
     self
   end
 
-
   def field(field)
     _fields.each{|gdt| return gdt if gdt._name == field.to_s }
     raise ::GDO::Core::Exception.new(t(:err_unknown_field, field, self.class.name))
   end
 
   def set_var(field, var)
-
+    self.field(field).var(var) and self
   end
 
   def set_value(field, value)
-
+    self.field(field).value(value) and self
   end
 
   def get_var(field)
-
+    self.field(field)._var
   end
 
   def get_value(field)
-
+    self.field(field)._value
   end
   
   def fields_of(klass)
@@ -46,10 +48,4 @@ module GDO::Core::WithFields
     }
   end
   
-  def render_html
-    html = ''
-    _fields.each{|gdt| _html = gdt.render_html; html += _html if _html }
-    html
-  end
-
 end

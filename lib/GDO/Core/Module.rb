@@ -13,6 +13,12 @@ class GDO::Core::Module < GDO::Core::GDO_Module
     ]
   end
   
+  def on_load_assets
+    add_js('js/gdo.js')
+    add_css('css/gdo.css')
+    add_asset('img/gdo_logo.png')
+  end
+  
   ##############
   ### Config ###
   ##############
@@ -23,12 +29,5 @@ class GDO::Core::Module < GDO::Core::GDO_Module
   end
 
   def cfg_themes; config_value('theme'); end
-  
-  subscribe(:gdo_include_assets, 'gdo-core-assets') do
-    page = ::GDO::UI::GDT_WebPage.instance
-    instance.add_js('gdo.js')
-    instance.add_css('gdo.css')
-    # page.favicon()
-  end
 
 end

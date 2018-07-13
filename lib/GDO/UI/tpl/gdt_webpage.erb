@@ -2,12 +2,17 @@
 <html>
 <head>
 	<title><%=html(page._title)%></title>
+    <%= page.render_css %>
 </head>
 <body>
 
 <div class="gdo-page-outer">
-<%=page._response.render_html%>
+<% page._response._fields.each do |gdt| %>
+<%= gdt.render_html %>
+<% end %>
 </div>
+
+<%= page.render_javascript %>
 
 </body>
 </html>

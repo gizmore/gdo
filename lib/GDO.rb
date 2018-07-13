@@ -30,6 +30,7 @@ end
 
 # Apply this simple autoloader to all gdo core modules
 module GDO
+  module Admin; extend Autoloader; end
   module Core; extend Autoloader; end
   module Crypto; extend Autoloader; end
   module Date; extend Autoloader; end
@@ -42,6 +43,7 @@ module GDO
   module Mail; extend Autoloader; end
   module Method; extend Autoloader; end
   module Net; extend Autoloader; end
+  module Test; extend Autoloader; end
   module Table; extend Autoloader; end
   module UI; extend Autoloader; end
   module User; extend Autoloader; end

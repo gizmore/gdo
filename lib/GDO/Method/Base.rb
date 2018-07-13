@@ -11,6 +11,7 @@ class GDO::Method::Base < GDO::Core::GDT
   def permission; end
   def with_session?; true; end
   def user_type; end
+  def _module; gdo_module(module_name); end
   def module_name; self.class.name.split('::')[-3]; end
   def gdo_module; get_module(module_name); end
   def method_name; self.class.name.split('::')[-1]; end

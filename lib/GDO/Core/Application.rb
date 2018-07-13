@@ -49,9 +49,9 @@ class GDO::Core::Application
       
       # Execute
       response = method.execute_method
-
-      page = GDO::UI::GDT_WebPage.instance.response(response)
-      [response._code, response._headers, page.render_html]
+      
+      # Render
+      [response._code, response._headers, response.render_html]
 
     rescue => ex
       # TODO: own exceptions are 200? nah?
@@ -61,23 +61,12 @@ class GDO::Core::Application
         GDO::UI::GDT_Error.make_with_exception(ex)
       ).code(500)
 
-      page = GDO::UI::GDT_WebPage.instance.response(response)
-      [response._code, response._headers, page.render_html]
+      # HTML error page
+      [response._code, response._headers, response.render_html]
     end
     
   end
     
-
-  # def parse_query_string(string)
-    # return {} unless string
-    # params = Rack::QueryParser::Params
-    # parser = Rack::QueryParser.new(params, 10, 10)
-    # parser.parse_query(string)
-  # end
-  #
-  # Called by passenger/rack
-  #
-  
   #############
   ### Cache ###
   #############
@@ -143,6 +132,10 @@ class GDO::Core::Application
     response.header('Set-Cookie', cookie)
     request.cookies[key] = value
   end
+  
+  ##############
+  ### Assets ###
+  ##############
     
 
 end

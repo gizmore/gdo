@@ -37,6 +37,7 @@ module GDO::Core
     def default_enabled; true; end
     def after_init; end
     def after_install; end
+    def on_load_assets; end
     def on_load_language; end
 
     ###########
@@ -196,12 +197,20 @@ module GDO::Core
     ##############
     ### Assets ###
     ##############
+    def page
+      ::GDO::UI::GDT_WebPage.instance
+    end
+    
     def add_js(path)
-      
+      page.add_js(path_for(path))
     end
     
     def add_css(path)
-      
+      page.add_css(path_for(path))
+    end
+    
+    def add_asset(path)
+      page.add_asset(path_for(path))
     end
 
   end

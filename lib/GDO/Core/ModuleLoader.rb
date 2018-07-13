@@ -1,6 +1,6 @@
 #
 # ModuleLoader holds all module instances.
-# @todo Clear cache event
+# Cache flush is handled by WithInstance decorator.
 #
 class GDO::Core::ModuleLoader
  
@@ -52,6 +52,7 @@ class GDO::Core::ModuleLoader
     @modules.each {|name, mod|
       ::GDO::Core::Log.info("loading module #{name}")
       mod.on_load_language
+      mod.on_load_assets
       mod.tables
       mod.methods
     }
