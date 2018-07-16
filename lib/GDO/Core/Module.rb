@@ -24,7 +24,7 @@ class GDO::Core::Module < GDO::Core::GDO_Module
   ##############
   def module_config
     [
-        ::GDO::Core::GDT_Theme.new('theme').initial('default'),
+      ::GDO::Core::GDT_Theme.new('theme').initial('default'),
     ]
   end
 

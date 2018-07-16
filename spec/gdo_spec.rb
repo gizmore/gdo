@@ -257,6 +257,12 @@ module GDO
       expect(html.index('<a')).to be_truthy
       expect(html.index('gdo-box-vertical')).to be_truthy
     end
+    
+    it "can list users via method QueryTable" do
+      code, headers, page = ::GDO::Test::Helper.do_gdo_request(:User, :AdminList)
+      response = ::GDO::Core::Application.response
+      byebug
+    end
 
   end
 end

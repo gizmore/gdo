@@ -24,5 +24,8 @@ class GDO::DB::GDT_DBField < GDO::Core::GDT
 
   def primary; @primary = true; self; end
   def _primary; @primary; end
+  
+  ###
+  
 
 end

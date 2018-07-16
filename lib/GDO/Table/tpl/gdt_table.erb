@@ -2,20 +2,27 @@
 	<div class="gdo-title"><%=field._label%></div>
 	<table id="gdo-<%=field._name%>">
 		<thead>
+<% if field._filtered %>
+			<tr>
+	<% field._fields.each do |gdt| %>
+				<th><%=gdt.render_filter%></th>
+	<% end %>
+			</tr>
+<% end %>
 			<tr>
 <% field._fields.each do |gdt| %>
-<%= gdt.render_filter %>
+				<th><%=gdt._label%>^v</th>
 <% end %>
 			</tr>
 		</thead>
 		<tbody>
-<% while row = field.fetch_row %>
+<% while gdo = field._result.fetch_object %>
 			<tr>
-<% field._fields.each do |gdt| %>
-				<td><%= gdt.gdo(row).render_cell %></td>
-<% end %>
-<% end %>			
+	<% field._fields.each do |gdt| %>
+				<td><%=gdt.gdo(gdo).render_cell%></td>
+	<% end %>
 			</tr>
+<% end %>
 		</tbody>
 	</table>
 </div>

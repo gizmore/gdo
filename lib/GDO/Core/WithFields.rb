@@ -6,10 +6,16 @@ module GDO::Core::WithFields
   def fields
     []
   end
+
+  def with_fields(fields)
+    @fields = fields
+    self
+  end
   
   def _fields
     @fields ||= fields
   end
+  
   
   def add_field(field)
     _fields.push(field)

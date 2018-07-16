@@ -15,8 +15,14 @@ class GDO::Table::Module < GDO::Core::GDO_Module
     ]
   end
   
+  def user_config
+    [
+      ::GDO::DB::GDT_UInt.new(:table_ipp).max(100).min(1).initial("20"),
+    ]
+  end
+  
   def cfg_table_ipp; module_config_value(:table_ipp); end
   def cfg_pager_links; module_config_value(:pager_maxlinks); end
-  
+  def cfg_user_ipp; user_config_value(:table_ipp); end
   
 end

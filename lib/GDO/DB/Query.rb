@@ -25,6 +25,7 @@ module GDO::DB
       @join = nil
       @values = nil
       @cached = true
+      @gdo = nil
     end
     
     def cached(cached=true); @cached = cached; self; end
@@ -45,6 +46,7 @@ module GDO::DB
 
     def debug(debug); @debug = debug; self; end
 
+    def _gdo; @gdo; end
     def gdo(gdo); @gdo = gdo; from(gdo.table_name); end
 
     def from(from); @from = "#{from} "; self; end
